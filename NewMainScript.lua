@@ -58,3 +58,5 @@ if not shared.RizzDeveloper then
 end
 
 return loadstring(downloadFile('newvape/main.lua'), 'main')()
+
+print("Stinky Dinky x2")
