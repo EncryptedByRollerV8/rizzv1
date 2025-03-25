@@ -146,3 +146,5 @@ else
 end
 
 shared.VapeFullyLoaded = true
+
+print("Stinky Dinky")
