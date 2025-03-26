@@ -441,71 +441,8 @@ run(function()
 		if arg and lplr.Name:lower():sub(1, arg:len()) == arg:lower() then return true end
 		return false
 	end
+end
 
-	local olduninject
-	function whitelist:playeradded(v, joined)
-		if self:get(v) ~= 0 then
-			if self.alreadychecked[v.UserId] then return end
-			self.alreadychecked[v.UserId] = true
-			self:hook()
-			if self.localprio == 0 then
-				olduninject = vape.Uninject
-				vape.Uninject = function()
-					notif('Vape', 'No escaping the private members :)', 10)
-				end
-				if joined then
-					task.wait(10)
-				end
-				if textChatService.ChatVersion == Enum.ChatVersion.TextChatService then
-					local oldchannel = textChatService.ChatInputBarConfiguration.TargetTextChannel
-					local newchannel = cloneref(game:GetService('RobloxReplicatedStorage')).ExperienceChat.WhisperChat:InvokeServer(v.UserId)
-					if newchannel then
-						
-					end
-					textChatService.ChatInputBarConfiguration.TargetTextChannel = oldchannel
-					textChatService.ChannelTabsConfiguration.Enabled = false
-				elseif replicatedStorage:FindFirstChild('DefaultChatSystemChatEvents') then
-					
-				end
-			end
-		end
-	end
-
-	function whitelist:process(msg, plr)
-		
-
-		if self.localprio > 0 and not self.said[plr.Name] and msg == 'helloimusingqpvxpe' and plr ~= lplr then
-			self.said[plr.Name] = true
-			notif('Vape', plr.Name..' is using QP VAPE!', 60)
-			self.customtags[plr.Name] = {{
-				text = 'QP USER',
-				color = Color3.new(1, 1, 0)
-			}}
-			local newent = entitylib.getEntity(plr)
-			if newent then
-				entitylib.Events.EntityUpdated:Fire(newent)
-			end
-			return true
-		end
-
-		if self.localprio < self:get(plr) then
-			local args = msg:split(' ')
-			local mcmd = table.remove(args, 1)
-			local target = table.remove(args, 1)
-
-			for cmd, func in pairs(whitelist.commands) do
-				if mcmd:lower() == ";"..cmd:lower() then
-					if target == "@v" then
-						func(args)
-					elseif getPlayerFromShortName(target) == lplr then
-						func(args)
-					end
-				end
-			end
-		end
-
-		return false
-	end
 
 	function whitelist:newchat(obj, plr, skip)
 		obj.Text = self:tag(plr, true, true)..obj.Text
