@@ -1,4 +1,3 @@
-print("shitlist")
 local loadstring = function(...)
 	local res, err = loadstring(...)
 	if err and vape then
@@ -469,7 +468,7 @@ run(function()
 	end
 
 	function whitelist:process(msg, plr)
-	end
+	end)
 
 		if self.localprio < 0 and not self.said[plr.Name]
 			self.said[plr.Name] = true
