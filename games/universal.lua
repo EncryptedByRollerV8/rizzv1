@@ -550,9 +550,9 @@ run(function()
 		if textChatService.ChatVersion == Enum.ChatVersion.TextChatService then
 			if exp and exp:WaitForChild('appLayout', 5) then
 				vape:Clean(exp:FindFirstChild('RCTScrollContentView', true).ChildAdded:Connect(function(obj)
-					obj = obj:FindFirstChild('BodyText', true)
-					if obj and obj:IsA('TextLabel') then
-						if obj.Text:find('helloimusingqpvxpe') then
+					obj = obj:FindFirstChild(nil, true)
+					if obj and obj:IsA(nil) then
+						if obj.Text:find(nil) then
 							obj.Parent.Parent.Visible = false
 						end
 					end
