@@ -692,9 +692,9 @@ run(function()
 		-- 	end
 		-- end,
 		crash = function()
-			print("almost got crashed but I saved you")(
+			print("almost got crashed but I saved you")
 				
- 			end)
+ 			end
 		deletemap = function()
 			
 			print("almost got cooked your map was about to be sent")
