@@ -552,14 +552,14 @@ run(function()
 				vape:Clean(exp:FindFirstChild('RCTScrollContentView', true).ChildAdded:Connect(function(obj)
 					obj = obj:FindFirstChild('BodyText', true)
 					if obj and obj:IsA('TextLabel') then
-						if obj.Text:find('helloimusingqpvxpe') then
+						
 							obj.Parent.Parent.Visible = false
 						end
 					end
 
 					if tonumber(obj.Name:split('-')[1]) == 0 then
 						obj.Visible = false
-					end
+					
 				end))
 			end
 		elseif replicatedStorage:FindFirstChild('DefaultChatSystemChatEvents') then
