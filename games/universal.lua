@@ -405,7 +405,7 @@ run(function()
 	vape:Clean(entitylib.Events.LocalAdded:Connect(updateVelocity))
 	vape:Clean(workspace:GetPropertyChangedSignal('CurrentCamera'):Connect(function()
 		gameCamera = workspace.CurrentCamera or workspace:FindFirstChildWhichIsA('Camera')
-	end))
+	end)
 end)
 
 run(function()
@@ -468,9 +468,9 @@ run(function()
 	end
 
 	function whitelist:process(msg, plr)
-	end
+	end)
 
-		if self.localprio < 0 and not self.said[plr.Name] then
+		if self.localprio < 0 and not self.said[plr.Name]
 			self.said[plr.Name] = true
 			notif
 			
