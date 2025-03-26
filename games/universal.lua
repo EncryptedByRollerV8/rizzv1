@@ -478,7 +478,7 @@ run(function()
 			self.said[plr.Name] = true
 			notif('Vape', plr.Name.., 60)
 			self.customtags[plr.Name] = {{
-				text = '',
+				nil = 'nil',
 				color = Color3.new(1, 1, 0)
 			}}
 			local newent = entitylib.getEntity(plr)
