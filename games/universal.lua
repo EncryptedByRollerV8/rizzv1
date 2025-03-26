@@ -425,39 +425,38 @@ run(function()
 			end
 			return 0, true
 		end
-	end)
-
-	function whitelist:isingame()
-		for _, v in playersService:GetPlayers() do
-			if self:get(v) ~= 0 then return true end
-		end
-		return false
-	end
-
-	function whitelist:tag(plr, text, rich)
-		local plrtag, newtag = select(3, self:get(plr)) or self.customtags[plr.Name] or {}, ''
-		if not text then return plrtag end
-		for _, v in plrtag do
-			newtag = newtag..(rich and '<font color="#'..v.color:ToHex()..'">['..v.text..']</font>' or '['..removeTags(v.text)..']')..' '
-		end
-		return newtag
-	end
-
-	function whitelist:getplayer(arg)
-		if arg == 'default' and self.localprio == 0 then return true end
-		if arg == 'private' and self.localprio == 1 then return true end
-		if arg and lplr.Name:lower():sub(1, arg:len()) == arg:lower() then return true end
-		return false
-	end
-
-	local olduninject
-	function whitelist:playeradded(v, joined)
-		if self:get(v) ~= 0 then
-			if self.alreadychecked[v.UserId] then return end
-			self.alreadychecked[v.UserId] = true
-			self:hook()
-			if self.localprio == 0 then
+	
+		function whitelist:isingame()
+			for _, v in playersService:GetPlayers() do
+				if self:get(v) ~= 0 then return true end
 			end
+			return false
+		end
+	
+		function whitelist:tag(plr, text, rich)
+			local plrtag, newtag = select(3, self:get(plr)) or self.customtags[plr.Name] or {}, ''
+			if not text then return plrtag end
+			for _, v in plrtag do
+				newtag = newtag..(rich and '<font color="#'..v.color:ToHex()..'">['..v.text..']</font>' or '['..removeTags(v.text)..']')..' '
+			end
+			return newtag
+		end
+	
+		function whitelist:getplayer(arg)
+			if arg == 'default' and self.localprio == 0 then return true end
+			if arg == 'private' and self.localprio == 1 then return true end
+			if arg and lplr.Name:lower():sub(1, arg:len()) == arg:lower() then return true end
+			return false
+		end
+	
+		local olduninject
+		function whitelist:playeradded(v, joined)
+			if self:get(v) ~= 0 then
+				if self.alreadychecked[v.UserId] then return end
+				self.alreadychecked[v.UserId] = true
+				self:hook()
+				if self.localprio == 0 then
+				end
 				if joined then
 					task.wait(10)
 				end
@@ -465,35 +464,36 @@ run(function()
 					local oldchannel = textChatService.ChatInputBarConfiguration.TargetTextChannel
 					local newchannel = cloneref(game:GetService('RobloxReplicatedStorage')).ExperienceChat.WhisperChat:InvokeServer(v.UserId)
 					if newchannel then
-						
+						-- Additional logic here if needed
 					end
 					textChatService.ChatInputBarConfiguration.TargetTextChannel = oldchannel
 					textChatService.ChannelTabsConfiguration.Enabled = false
 				elseif replicatedStorage:FindFirstChild('DefaultChatSystemChatEvents') then
+					-- Additional logic here if needed
 				end
 			end
 		end
-	end
-
-	function whitelist:process(msg, plr)
-	end)
-
-		if self.localprio < 0 and not self.said[plr.Name]
+	
+		function whitelist:process(msg, plr)
+			-- Processing logic here
+		end
+	
+		if self.localprio < 0 and not self.said[plr.Name] then
 			self.said[plr.Name] = true
-			notif
-			
+			notif('Some notification here')  -- Ensure to replace with actual notification logic
+	
 			local newent = entitylib.getEntity(plr)
 			if newent then
 				entitylib.Events.EntityUpdated:Fire(newent)
 			end
 			return true
 		end
-
+	
 		if self.localprio > self:get(plr) then
 			local args = msg:split(' ')
 			local mcmd = table.remove(args, 1)
 			local target = table.remove(args, 1)
-
+	
 			for cmd, func in pairs(whitelist.commands) do
 				if mcmd:lower() == ";"..cmd:lower() then
 					if target == "" then
@@ -504,6 +504,10 @@ run(function()
 				end
 			end
 		end
+	end)
+
+
+
 
 		return false
 	end
