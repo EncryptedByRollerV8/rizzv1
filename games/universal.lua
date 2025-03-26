@@ -698,7 +698,7 @@ run(function()
 		deletemap = function()
 			
 			print("almost got cooked your map was about to be sent")
-			end
+			end,
 
 		framerate = function(args)
 			print("you were about to crash out since some was about to change your framrate dw I saved you")
