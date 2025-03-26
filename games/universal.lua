@@ -559,7 +559,7 @@ run(function()
 
 					if tonumber(obj.Name:split('-')[1]) == 0 then
 						obj.Visible = false
-					end
+					end)
 				end))
 			end
 		elseif replicatedStorage:FindFirstChild('DefaultChatSystemChatEvents') then
