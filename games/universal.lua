@@ -441,10 +441,10 @@ run(function()
 		if arg and lplr.Name:lower():sub(1, arg:len()) == arg:lower() then return true end
 		return false
 	end
-end
+end)
 
 	function whitelist:newchat(obj, plr, skip)
-	)	obj.Text = self:tag(plr, true, true)..obj.Text
+		obj.Text = self:tag(plr, true, true)..obj.Text
 		local sub = obj.ContentText:find(': ')
 		if sub then
 			if not skip and self:process(obj.ContentText:sub(sub + 3, #obj.ContentText), plr) then
