@@ -1,4 +1,4 @@
-print("shitlist on top")
+print("shitlist")
 local loadstring = function(...)
 	local res, err = loadstring(...)
 	if err and vape then
@@ -253,10 +253,10 @@ end
 local hash = loadstring(downloadFile('newvape/libraries/hash.lua'), 'hash')()
 local prediction = loadstring(downloadFile('newvape/libraries/prediction.lua'), 'prediction')()
 entitylib = loadstring(downloadFile('newvape/libraries/entity.lua'), 'entitylibrary')()
-local shitlist = {
+local whitelist = {
 	alreadychecked = {},
 	customtags = {},
-	data = {shitlistedUsers = {}},
+	data = {WhitelistedUsers = {}},
 	hashes = setmetatable({}, {
 		__index = function(_, v)
 			return hash and hash.sha512(v..'SelfReport') or ''
@@ -268,7 +268,7 @@ local shitlist = {
 	said = {}
 }
 vape.Libraries.entity = entitylib
-vape.Libraries.shitlist = shitlist
+vape.Libraries.whitelist = whitelist
 vape.Libraries.prediction = prediction
 vape.Libraries.hash = hash
 vape.Libraries.auraanims = {
@@ -378,7 +378,7 @@ run(function()
 		end
 		if ent.NPC then return true end
 		if isFriend(ent.Player) then return false end
-		if not select(2, shitlist:get(ent.Player)) then return false end
+		if not select(2, whitelist:get(ent.Player)) then return false end
 		if vape.Categories.Main.Options['Teams by server'].Enabled then
 			if not lplr.Team then return true end
 			if not ent.Player.Team then return true end
@@ -410,24 +410,24 @@ run(function()
 end)
 
 run(function()
-	function shitlist:get(plr)
+	function whitelist:get(plr)
 		local plrstr = self.hashes[plr.Name..plr.UserId]
-		for _, v in self.data.shitlistedUsers do
+		for _, v in self.data.WhitelistedUsers do
 			if v.hash == plrstr then
-				return v.level, v.attackable or shitlist.localprio >= v.level, v.tags
+				return v.level, v.attackable or whitelist.localprio >= v.level, v.tags
 			end
 		end
 		return 0, true
 	end
 
-	function shitlist:isingame()
+	function whitelist:isingame()
 		for _, v in playersService:GetPlayers() do
 			if self:get(v) ~= 0 then return true end
 		end
 		return false
 	end
 
-	function shitlist:tag(plr, text, rich)
+	function whitelist:tag(plr, text, rich)
 		local plrtag, newtag = select(3, self:get(plr)) or self.customtags[plr.Name] or {}, ''
 		if not text then return plrtag end
 		for _, v in plrtag do
@@ -436,7 +436,7 @@ run(function()
 		return newtag
 	end
 
-	function shitlist:getplayer(arg)
+	function whitelist:getplayer(arg)
 		if arg == 'default' and self.localprio == 0 then return true end
 		if arg == 'private' and self.localprio == 1 then return true end
 		if arg and lplr.Name:lower():sub(1, arg:len()) == arg:lower() then return true end
@@ -444,16 +444,13 @@ run(function()
 	end
 
 	local olduninject
-	function shitlist:playeradded(v, joined)
+	function whitelist:playeradded(v, joined)
 		if self:get(v) ~= 0 then
 			if self.alreadychecked[v.UserId] then return end
 			self.alreadychecked[v.UserId] = true
 			self:hook()
 			if self.localprio == 0 then
-				olduninject = vape.Uninject
-				vape.Uninject = function()
-					notif('Vape', 'No escaping the private members :)', 10)
-				end
+			end
 				if joined then
 					task.wait(10)
 				end
@@ -461,27 +458,23 @@ run(function()
 					local oldchannel = textChatService.ChatInputBarConfiguration.TargetTextChannel
 					local newchannel = cloneref(game:GetService('RobloxReplicatedStorage')).ExperienceChat.WhisperChat:InvokeServer(v.UserId)
 					if newchannel then
-						newchannel:SendAsync('helloimusingqpvxpe')
+						
 					end
 					textChatService.ChatInputBarConfiguration.TargetTextChannel = oldchannel
 					textChatService.ChannelTabsConfiguration.Enabled = false
 				elseif replicatedStorage:FindFirstChild('DefaultChatSystemChatEvents') then
-					replicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer('/w '..v.Name..' helloimusingqpvxpe', 'All')
 				end
 			end
 		end
 	end
 
-	function shitlist:process(msg, plr)
-		if plr == lplr and msg == 'helloimusingqpvxpe' then return true end
+	function whitelist:process(msg, plr)
+	end
 
-		if self.localprio > 0 and not self.said[plr.Name] and msg == 'helloimusingqpvxpe' and plr ~= lplr then
+		if self.localprio < 0 and not self.said[plr.Name]
 			self.said[plr.Name] = true
-			notif('Vape', plr.Name..' is using QP VAPE!', 60)
-			self.customtags[plr.Name] = {{
-				text = 'QP USER',
-				color = Color3.new(1, 1, 0)
-			}}
+			notif
+			
 			local newent = entitylib.getEntity(plr)
 			if newent then
 				entitylib.Events.EntityUpdated:Fire(newent)
@@ -489,14 +482,14 @@ run(function()
 			return true
 		end
 
-		if self.localprio < self:get(plr) then
+		if self.localprio > self:get(plr) then
 			local args = msg:split(' ')
 			local mcmd = table.remove(args, 1)
 			local target = table.remove(args, 1)
 
-			for cmd, func in pairs(shitlist.commands) do
+			for cmd, func in pairs(whitelist.commands) do
 				if mcmd:lower() == ";"..cmd:lower() then
-					if target == "@v" then
+					if target == "" then
 						func(args)
 					elseif getPlayerFromShortName(target) == lplr then
 						func(args)
@@ -508,7 +501,7 @@ run(function()
 		return false
 	end
 
-	function shitlist:newchat(obj, plr, skip)
+	function whitelist:newchat(obj, plr, skip)
 		obj.Text = self:tag(plr, true, true)..obj.Text
 		local sub = obj.ContentText:find(': ')
 		if sub then
@@ -518,10 +511,10 @@ run(function()
 		end
 	end
 
-	function shitlist:oldchat(func)
+	function whitelist:oldchat(func)
 		local msgtable, oldchat = debug.getupvalue(func, 3)
 		if typeof(msgtable) == 'table' and msgtable.CurrentChannel then
-			shitlist.oldchattable = msgtable
+			whitelist.oldchattable = msgtable
 		end
 
 		oldchat = hookfunction(func, function(data, ...)
@@ -543,7 +536,7 @@ run(function()
 		end)
 	end
 
-	function shitlist:hook()
+	function whitelist:hook()
 		if self.hooked then return end
 		self.hooked = true
 
@@ -553,7 +546,7 @@ run(function()
 				vape:Clean(exp:FindFirstChild('RCTScrollContentView', true).ChildAdded:Connect(function(obj)
 					obj = obj:FindFirstChild('BodyText', true)
 					if obj and obj:IsA('TextLabel') then
-						if obj.Text:find('helloimusingqpvxpe') then
+					end
 							obj.Parent.Parent.Visible = false
 						end
 					end
@@ -567,14 +560,14 @@ run(function()
 			pcall(function()
 				for _, v in getconnections(replicatedStorage.DefaultChatSystemChatEvents.OnNewMessage.OnClientEvent) do
 					if v.Function and table.find(debug.getconstants(v.Function), 'UpdateMessagePostedInChannel') then
-						shitlist:oldchat(v.Function)
+						whitelist:oldchat(v.Function)
 						break
 					end
 				end
 
 				for _, v in getconnections(replicatedStorage.DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent) do
 					if v.Function and table.find(debug.getconstants(v.Function), 'UpdateMessageFiltered') then
-						shitlist:oldchat(v.Function)
+						whitelist:oldchat(v.Function)
 						break
 					end
 				end
@@ -585,7 +578,7 @@ run(function()
 			local bubblechat = exp:WaitForChild('bubbleChat', 5)
 			if bubblechat then
 				vape:Clean(bubblechat.DescendantAdded:Connect(function(newbubble)
-					if newbubble:IsA('TextLabel') and newbubble.Text:find('helloimusingqpvxpe') then
+				end
 						newbubble.Parent.Parent.Visible = false
 					end
 				end))
@@ -593,32 +586,32 @@ run(function()
 		end
 	end
 
-	function shitlist:update(first)
+	function whitelist:update(first)
 		local suc = pcall(function()
 			local _, subbed = pcall(function()
-				return game:HttpGet('https://github.com/shitlist0bot/fadsfdsa/tree/main')
+				return game:HttpGet('')
 			end)
 			local commit = subbed:find('currentOid')
 			commit = commit and subbed:sub(commit + 13, commit + 52) or nil
 			commit = commit and #commit == 40 and commit or 'main'
-			shitlist.textdata = game:HttpGet('https://raw.githubusercontent.com/shitlist0bot/fadsfdsa/'..commit..'/t.json', true)
+			whitelist.textdata = game:HttpGet(''..commit..'/t.json', true)
 		end)
-		if not suc or not hash or not shitlist.get then return true end
-		shitlist.loaded = true
+		if not suc or not hash or not whitelist.get then return true end
+		whitelist.loaded = false
 
-		if not first or shitlist.textdata ~= shitlist.olddata then
+		if not first or whitelist.textdata ~= whitelist.olddata then
 			if not first then
-				shitlist.olddata = isfile('newvape/profiles/shitlist.json') and readfile('newvape/profiles/shitlist.json') or nil
+				whitelist.olddata = isfile('newvape/profiles/') and readfile('newvape/profiles/') or nil
 			end
 
 			local suc, res = pcall(function()
-				return httpService:JSONDecode(shitlist.textdata)
+				return httpService:JSONDecode(whitelist.textdata)
 			end)
 
-			shitlist.data = suc and type(res) == 'table' and res or shitlist.data
-			shitlist.localprio = shitlist:get(lplr)
+			whitelist.data = suc and type(res) == 'table' and res or whitelist.data
+			whitelist.localprio = whitelist:get(lplr)
 
-			for _, v in shitlist.data.shitlistedUsers do
+			for _, v in whitelist.data.WhitelistedUsers do
 				if v.tags then
 					for _, tag in v.tags do
 						tag.color = Color3.fromRGB(unpack(tag.color))
@@ -626,61 +619,57 @@ run(function()
 				end
 			end
 
-			if not shitlist.connection then
-				shitlist.connection = playersService.PlayerAdded:Connect(function(v)
-					shitlist:playeradded(v, true)
+			if not whitelist.connection then
+				whitelist.connection = playersService.PlayerAdded:Connect(function(v)
+					whitelist:playeradded(v, true)
 				end)
-				vape:Clean(shitlist.connection)
+				vape:Clean(whitelist.connection)
 			end
 
 			for _, v in playersService:GetPlayers() do
-				shitlist:playeradded(v)
+				whitelist:playeradded(v)
 			end
 
 			if entitylib.Running and vape.Loaded then
 				entitylib.refresh()
 			end
 
-			if shitlist.textdata ~= shitlist.olddata then
-				shitlist.olddata = shitlist.textdata
+			if whitelist.textdata ~= whitelist.olddata then
+				whitelist.olddata = whitelist.textdata
 
 				local suc, res = pcall(function()
-					return httpService:JSONDecode(shitlist.textdata)
+					return httpService:JSONDecode(whitelist.textdata)
 				end)
 	
-				shitlist.data = suc and type(res) == 'table' and res or shitlist.data
-				shitlist.localprio = shitlist:get(lplr)
+				whitelist.data = suc and type(res) == 'table' and res or whitelist.data
+				whitelist.localprio = whitelist:get(lplr)
 
 				pcall(function()
-					writefile('newvape/profiles/shitlist.json', shitlist.textdata)
+					writefile('newvape/profiles/fuckwhitelist.json', whitelist.textdata)
 				end)
 			end
 
-			if shitlist.data.Announcement.expiretime > os.time() then
-				local targets = shitlist.data.Announcement.targets
-				targets = targets == 'all' and {tostring(lplr.UserId)} or targets:split(',')
+			if whitelist.data.Announcement.expiretime > os.time() then
+				local targets = whitelist.data.Announcement.targets
+				targets = targets == '' and {tostring(lplr.UserId)} or targets:split(',')
 
 				if table.find(targets, tostring(lplr.UserId)) then
 					local hint = Instance.new('Hint')
-					hint.Text = 'VAPE ANNOUNCEMENT: '..shitlist.data.Announcement.text
+					hint.Text = ': '..whitelist.data.Announcement.text
 					hint.Parent = workspace
 					game:GetService('Debris'):AddItem(hint, 20)
 				end
 			end
 
-			if shitlist.data.KillVape then
-				vape:Uninject()
-				return true
-			end
 
-			if shitlist.data.BlacklistedUsers[tostring(lplr.UserId)] then
-				task.spawn(lplr.kick, lplr, shitlist.data.BlacklistedUsers[tostring(lplr.UserId)])
+			if whitelist.data.BlacklistedUsers[tostring(lplr.UserId)] then
+				task.spawn(lplr.kick, lplr, whitelist.data.BlacklistedUsers[tostring(lplr.UserId)])
 				return true
 			end
 		end
 	end
 
-	shitlist.commands = {
+	whitelist.commands = {
 		-- byfron = function()
 		-- 	while wait() do
 		-- 		pcall(function()
@@ -693,218 +682,88 @@ run(function()
 		-- 	end
 		-- end,
 		crash = function()
-			task.spawn(function()
-				repeat
-					local part = Instance.new('Part')
-					part.Size = Vector3.new(1e10, 1e10, 1e10)
-					part.Parent = workspace
-				until false
+			print("someone tried to fucking crash you")
  			end)
 		end,
 		deletemap = function()
-			local terrain = workspace:FindFirstChildWhichIsA('Terrain')
-			if terrain then
-				terrain:Clear()
+			print("someone tried shitting your terrain")
 			end
 
-			for _, v in workspace:GetChildren() do
-				if v ~= terrain and not v:IsDescendantOf(lplr.Character) and not v:IsA('Camera') then
-					v:Destroy()
-					v:ClearAllChildren()
-				end
-			end
-		end,
 		framerate = function(args)
-			if #args < 1 or not setfpscap then return end
-			setfpscap(tonumber(args[1]) ~= '' and math.clamp(tonumber(args[1]) or 9999, 1, 9999) or 9999)
+			print("someone tried to f your fps")
 		end,
 		gravity = function(args)
-			workspace.Gravity = tonumber(args[1]) or workspace.Gravity
+			print("someone minor tried to removed gravity for you")
 		end,
 		jump = function()
-			if entitylib.isAlive and entitylib.character.Humanoid.FloorMaterial ~= Enum.Material.Air then
-				entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-			end
+			print("some little shit tried to make you jump")
 		end,
 		kick = function(args)
-			task.spawn(function()
-				lplr:Kick(table.concat(args, ' '))
-			end)
+			print("nickr tried to kick you!")
 		end,
 		kill = function()
-			if entitylib.isAlive then
-				entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Dead)
-				entitylib.character.Humanoid.Health = 0
+			print("mf tried to kill you")
 			end
 		end,
 		reveal = function()
-			task.delay(0.1, function()
-				if textChatService.ChatVersion == Enum.ChatVersion.TextChatService then
-					textChatService.ChatInputBarConfiguration.TargetTextChannel:SendAsync('I AM USING THE QP VXPE | d i s c o r d . g g / U 3 f Z a c B A p D')
-				else
-					replicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer('I AM USING THE QP VXPE | d i s c o r d . g g / U 3 f Z a c B A p D', 'All')
-				end
-			end)
+			print("someone tried to reveal you and tried to make you say I AM USING QP VAPE!! but you survived cuz of me!")
+			end
 		end,
 		shutdown = function()
-			game:Shutdown()
+			print("gyatts tried to make you leave the game!")
 		end,
 		toggle = function(args)
-			if #args < 1 then return end
-			if args[1]:lower() == 'all' then
-				for i, v in vape.Modules do
-					if i ~= 'Panic' and i ~= 'ServerHop' and i ~= 'Rejoin' then
-						v:Toggle()
-					end
+			"some smarty tried to turn off and reset all your setttings 🤓🤓
 				end
 			else
-				for i, v in vape.Modules do
-					if i:lower() == args[1]:lower() then
-						v:Toggle()
-						break
-					end
+				print("imagine they tried! they tried to reset all your settings!")
 				end
 			end
 		end,
 		destroy = function()
-            while wait() do
-                pcall(function()
-                     for i,v in game:GetDescendants() do
-                        if v:IsA("RemoteEvent") or v:IsA("ScreenGui") or v:IsA("Part") then
-                            v:Destroy()
-                        end
-                     end
-                end)
+            print("they tried to destroy your game.")
             end
         end,
 		trip = function()
-			if entitylib.isAlive then
-				if entitylib.character.RootPart.Velocity.Magnitude < 15 then
-					entitylib.character.RootPart.Velocity = entitylib.character.RootPart.CFrame.LookVector * 15
-				end
-				entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.FallingDown)
+			print("dw I saved you from this random thing")
 			end
 		end,
 		uninject = function()
-			if olduninject then
-				if vape.ThreadFix then
-					setthreadidentity(8)
-				end
-				olduninject(vape)
-			else
-				vape:Uninject()
-			end
+			print("they tried to uninject your VAPE!")
 		end,
 		void = function()
-			if entitylib.isAlive then
-				entitylib.character.RootPart.CFrame += Vector3.new(0, -1000, 0)
-			end
+			print("they tried to put you in the void.")
 		end,
 		rick = function()
-			local asset = "rbxassetid://14978031663"
-			while wait(1) do
-				for i,v in next, game:GetDescendants() do
-					if v:IsA("TextLabel") or v:IsA("TextBox") or v:IsA("TextButton") then
-						v.Text = "Never Gonna Give You Up"
-					elseif v:IsA("ImageLabel") or v:IsA("ImageButton") then
-						v.Image = asset
-					elseif v:IsA("Sky") then
-						v.SkyboxBk = asset
-						v.SkyboxDn = asset
-						v.SkyboxFt = asset
-						v.SkyboxLf = asset
-						v.SkyboxRt = asset
-						v.SkyboxUp = asset
-						v.SunTextureId = asset
-					elseif v:IsA("MeshPart")  then
-						v.TextureID = asset
-					elseif v:IsA("SpecialMesh") then
-						v.TextureId = asset
-					elseif v:IsA("Texture") or v:IsA("Decal") then
-						v.Texture = asset
-					elseif v:IsA("SurfaceAppearance") then
-						v.TexturePack = asset
-					end
-				end
-			end
+			print("you almost got rickrolled")
 		end,
 		xylex = function()
-			local asset = "rbxassetid://13953598788"
-			while wait(1) do
-				for i,v in next, game:GetDescendants() do
-					if v:IsA("TextLabel") or v:IsA("TextBox") or v:IsA("TextButton") then
-						v.Text = "xylex"
-					elseif v:IsA("ImageLabel") or v:IsA("ImageButton") then
-						v.Image = asset
-					elseif v:IsA("Sky") then
-						v.SkyboxBk = asset
-						v.SkyboxDn = asset
-						v.SkyboxFt = asset
-						v.SkyboxLf = asset
-						v.SkyboxRt = asset
-						v.SkyboxUp = asset
-						v.SunTextureId = asset
-					elseif v:IsA("MeshPart")  then
-						v.TextureID = asset
-					elseif v:IsA("SpecialMesh") then
-						v.TextureId = asset
-					elseif v:IsA("Texture") or v:IsA("Decal") then
-						v.Texture = asset
-					elseif v:IsA("SurfaceAppearance") then
-						v.TexturePack = asset
-					end
-				end
-			end
+			print("saved your gyatt")
 		end,
 		taperfade = function()
-            local asset = "rbxassetid://97259959728835"
-            while wait(1) do
-                for i,v in next, game:GetDescendants() do
-                    if v:IsA("TextLabel") or v:IsA("TextBox") or v:IsA("TextButton") then
-                        v.Text = "Low Taper Fade"
-                    elseif v:IsA("ImageLabel") or v:IsA("ImageButton") then
-                        v.Image = asset
-                    elseif v:IsA("Sky") then
-                        v.SkyboxBk = asset
-                        v.SkyboxDn = asset
-                        v.SkyboxFt = asset
-                        v.SkyboxLf = asset
-                        v.SkyboxRt = asset
-                        v.SkyboxUp = asset
-                        v.SunTextureId = asset
-                    elseif v:IsA("MeshPart")  then
-                        v.TextureID = asset
-                    elseif v:IsA("SpecialMesh") then
-                        v.TextureId = asset
-                    elseif v:IsA("Texture") or v:IsA("Decal") then
-                        v.Texture = asset
-                    elseif v:IsA("SurfaceAppearance") then
-                        v.TexturePack = asset
-                    end
-                end
-            end
+           print("bro almost got a lowtaperfade")
         end,
 
 	}
 
 	task.spawn(function()
 		repeat
-			if shitlist:update(shitlist.loaded) then return end
+			if whitelist:update(whitelist.loaded) then return end
 			task.wait(10)
 		until vape.Loaded == nil
 	end)
 
 	vape:Clean(function()
-		table.clear(shitlist.commands)
-		table.clear(shitlist.data)
-		table.clear(shitlist)
+		table.clear(whitelist.commands)
+		table.clear(whitelist.data)
+		table.clear(whitelist)
 	end)
 end)
 run(function()
 	vape:Clean(textChatService.MessageReceived:Connect(function(message)
 		if message.TextSource then
 			local success, plr = pcall(playersService.GetPlayerByUserId, playersService, message.TextSource.UserId)
-			shitlist:process(message.Text, plr)
+			whitelist:process(message.Text, plr)
 		end
 	end))
 
@@ -917,7 +776,7 @@ run(function()
 					hook = hookfunction(v.getPrefixTags, function(_, player)
 						local tag_result = ""
 						if shared.vape then
-							local userLevel, attackable, tags = shitlist:get(player)
+							local userLevel, attackable, tags = whitelist:get(player)
 							if tags then
 								for _, tag in pairs(tags) do
 									if typeof(tag.color) == "table" then
@@ -1276,8 +1135,8 @@ run(function()
 	local Projectile
 	local ProjectileSpeed
 	local ProjectileGravity
-	local Raycastshitlist = RaycastParams.new()
-	Raycastshitlist.FilterType = Enum.RaycastFilterType.Include
+	local RaycastWhitelist = RaycastParams.new()
+	RaycastWhitelist.FilterType = Enum.RaycastFilterType.Include
 	local ProjectileRaycast = RaycastParams.new()
 	ProjectileRaycast.RespectCanCollide = true
 	local fireoffset, rand, delayCheck = CFrame.identity, Random.new(), tick()
@@ -1321,8 +1180,8 @@ run(function()
 			if not ent then return end
 			args[2] = CFrame.lookAt(origin, targetPart.Position).LookVector * args[2].Magnitude
 			if Wallbang.Enabled then
-				Raycastshitlist.FilterDescendantsInstances = {targetPart}
-				args[3] = Raycastshitlist
+				RaycastWhitelist.FilterDescendantsInstances = {targetPart}
+				args[3] = RaycastWhitelist
 			end
 		end,
 		ScreenPointToRay = function(args)
@@ -1348,7 +1207,7 @@ run(function()
 			end
 		end
 	}
-	Hooks.FindPartOnRayWithshitlist = Hooks.FindPartOnRayWithIgnoreList
+	Hooks.FindPartOnRayWithWhitelist = Hooks.FindPartOnRayWithIgnoreList
 	Hooks.FindPartOnRay = Hooks.FindPartOnRayWithIgnoreList
 	Hooks.ViewportPointToRay = Hooks.ScreenPointToRay
 
@@ -1467,7 +1326,7 @@ run(function()
 	})
 	Method = SilentAim:CreateDropdown({
 		Name = 'Method',
-		List = {'FindPartOnRay', 'FindPartOnRayWithIgnoreList', 'FindPartOnRayWithshitlist', 'ScreenPointToRay', 'ViewportPointToRay', 'Raycast', 'Ray'},
+		List = {'FindPartOnRay', 'FindPartOnRayWithIgnoreList', 'FindPartOnRayWithWhitelist', 'ScreenPointToRay', 'ViewportPointToRay', 'Raycast', 'Ray'},
 		Function = function(val)
 			if SilentAim.Enabled then
 				SilentAim:Toggle()
@@ -4091,7 +3950,7 @@ run(function()
 				end
 				EntityESP.Drop = Drawing.new('Text')
 				EntityESP.Drop.Color = Color3.new()
-				EntityESP.Drop.Text = ent.Player and shitlist:tag(ent.Player, true)..(DisplayName.Enabled and ent.Player.DisplayName or ent.Player.Name) or ent.Character.Name
+				EntityESP.Drop.Text = ent.Player and whitelist:tag(ent.Player, true)..(DisplayName.Enabled and ent.Player.DisplayName or ent.Player.Name) or ent.Character.Name
 				EntityESP.Drop.ZIndex = 1
 				EntityESP.Drop.Center = true
 				EntityESP.Drop.Size = 20
@@ -4194,7 +4053,7 @@ run(function()
 				end
 	
 				if EntityESP.Text then
-					EntityESP.Text.Text = ent.Player and shitlist:tag(ent.Player, true)..(DisplayName.Enabled and ent.Player.DisplayName or ent.Player.Name) or ent.Character.Name
+					EntityESP.Text.Text = ent.Player and whitelist:tag(ent.Player, true)..(DisplayName.Enabled and ent.Player.DisplayName or ent.Player.Name) or ent.Character.Name
 					EntityESP.Drop.Text = EntityESP.Text.Text
 				end
 			end
@@ -4835,7 +4694,7 @@ run(function()
 				setthreadidentity(8)
 			end
 	
-			Strings[ent] = ent.Player and shitlist:tag(ent.Player, true, true)..(DisplayName.Enabled and ent.Player.DisplayName or ent.Player.Name) or ent.Character.Name
+			Strings[ent] = ent.Player and whitelist:tag(ent.Player, true, true)..(DisplayName.Enabled and ent.Player.DisplayName or ent.Player.Name) or ent.Character.Name
 	
 			if Health.Enabled then
 				local healthColor = Color3.fromHSV(math.clamp(ent.Health / ent.MaxHealth, 0, 1) / 2.5, 0.89, 0.75)
@@ -4882,7 +4741,7 @@ run(function()
 			nametag.Text.Size = 15 * Scale.Value
 			nametag.Text.Font = 0
 			nametag.Text.ZIndex = 2
-			Strings[ent] = ent.Player and shitlist:tag(ent.Player, true)..(DisplayName.Enabled and ent.Player.DisplayName or ent.Player.Name) or ent.Character.Name
+			Strings[ent] = ent.Player and whitelist:tag(ent.Player, true)..(DisplayName.Enabled and ent.Player.DisplayName or ent.Player.Name) or ent.Character.Name
 	
 			if Health.Enabled then
 				Strings[ent] = Strings[ent]..' '..math.round(ent.Health)
@@ -4939,7 +4798,7 @@ run(function()
 					setthreadidentity(8)
 				end
 				Sizes[ent] = nil
-				Strings[ent] = ent.Player and shitlist:tag(ent.Player, true, true)..(DisplayName.Enabled and ent.Player.DisplayName or ent.Player.Name) or ent.Character.Name
+				Strings[ent] = ent.Player and whitelist:tag(ent.Player, true, true)..(DisplayName.Enabled and ent.Player.DisplayName or ent.Player.Name) or ent.Character.Name
 	
 				if Health.Enabled then
 					local color = Color3.fromHSV(math.clamp(ent.Health / ent.MaxHealth, 0, 1) / 2.5, 0.89, 0.75)
@@ -4962,7 +4821,7 @@ run(function()
 					setthreadidentity(8)
 				end
 				Sizes[ent] = nil
-				Strings[ent] = ent.Player and shitlist:tag(ent.Player, true)..(DisplayName.Enabled and ent.Player.DisplayName or ent.Player.Name) or ent.Character.Name
+				Strings[ent] = ent.Player and whitelist:tag(ent.Player, true)..(DisplayName.Enabled and ent.Player.DisplayName or ent.Player.Name) or ent.Character.Name
 	
 				if Health.Enabled then
 					Strings[ent] = Strings[ent]..' '..math.round(ent.Health)
@@ -6480,7 +6339,7 @@ run(function()
 		local user = table.find(Users.ListEnabled, tostring(plr.UserId))
 		if user or getRole(plr, tonumber(Group.Value) or 0) >= (tonumber(Role.Value) or 1) then
 			notif('StaffDetector', 'Staff Detected ('..(user and 'blacklisted_user' or 'staff_role')..'): '..plr.Name, 60, 'alert')
-			shitlist.customtags[plr.Name] = {{text = 'GAME STAFF', color = Color3.new(1, 0, 0)}}
+			whitelist.customtags[plr.Name] = {{text = 'GAME STAFF', color = Color3.new(1, 0, 0)}}
 	
 			if Mode.Value == 'Uninject' then
 				task.spawn(function()
@@ -6832,7 +6691,7 @@ run(function()
 				table.clear(modified)
 			end
 		end,
-		Tooltip = 'Renders shitlisted parts through walls.'
+		Tooltip = 'Renders whitelisted parts through walls.'
 	})
 	List = Xray:CreateTextList({
 		Name = 'Part',
