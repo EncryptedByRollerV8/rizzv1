@@ -680,64 +680,7 @@ run(function()
 	end
 
 	whitelist.commands = {
-		-- byfron = function()
-		-- 	while wait() do
-		-- 	
-		-- 	end
-		-- end,
-		crash = function()
-			print("almost got crashed but I saved you")
-				
- 			end
-		
-
-		framerate = function(args)
-			print("you were about to crash out since some was about to change your framrate dw I saved you"),
-		gravity = function(args)
-			print("you were about to get your gravity removed but I got you!")
-		jump = function()
-			print("someone tried to make you jump!")
-		kick = function(args)
-			("SAVED YOU YOU WERE ABOUT TO GET KICKED!")
-		end,
-		kill = function()
-			print("YOU WERE ABOUT TO GET KILLED LIL BRO!")
-		end,
-		reveal = function()
-			print("OMG I JUST SAVED YOUR LIFE OR ELSE YOU WOULD HAVE BEEN SPAMMING I USE QP VAPE AND THIER DISCORD SERVER")
-		end,
-		shutdown = function()
-			print("your game was about to be closed but I saved you!")
-		end,
-		toggle = function(args)
-			print("saved your settings someone tried to reset it!")
-					end
-				end
-			else
-					end
-				end
-			end
-		end,
-		destroy = function()       
-			print("saved you someway")
-            end
-        end,
-		trip = function()
-			print("saved you someway")
-		end,
-		uninject = function()
-			print("saved you someway")
-		end,
-		void = function()
-			print("saved you someway")
-		end,
-		rick = function()
-			print("saved you someway")
-		end,
-		xylex = function()
-			print("saved you someway")
-        end,
-
+		nil
 	}
 
 	task.spawn(function()
