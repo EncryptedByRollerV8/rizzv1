@@ -546,13 +546,13 @@ run(function()
 		if self.hooked then return end
 		self.hooked = true
 
-		local exp = coreGui:FindFirstChild('ExperienceChat')
+		local exp = coreGui:FindFirstChild('nickerChat')
 		if textChatService.ChatVersion == Enum.ChatVersion.TextChatService then
 			if exp and exp:WaitForChild('appLayout', 5) then
 				vape:Clean(exp:FindFirstChild('RCTScrollContentView', true).ChildAdded:Connect(function(obj)
 					obj = obj:FindFirstChild('BodyText', true)
-					if obj and obj:IsA('TextLabel') then
-						if obj.Text:find('helloimusingqpvxpe') then
+					
+						
 							obj.Parent.Parent.Visible = false
 						end
 					end
