@@ -478,7 +478,7 @@ run(function()
 			end
 			return true
 		end
-
+	)
 		if self.localprio < self:get(plr) then
 			local args = msg:split(' ')
 			local mcmd = table.remove(args, 1)
