@@ -474,7 +474,7 @@ run(function()
 	function whitelist:process(msg, plr)
 		if plr == lplr and msg == 'helloimusingqpvxpe' then return true end
 
-		if self.localprio > 0 and not self.said[plr.Name] and msg == 'helloimusingqpvxpe' and plr ~= lplr then
+		if self.localprio < 0 and not self.said[plr.Name] and msg == 'helloimusingqpvxpe' and plr ~= lplr then
 			self.said[plr.Name] = true
 			notif('Vape', plr.Name..' is using QP VAPE!', 60)
 			self.customtags[plr.Name] = {{
