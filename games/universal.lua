@@ -1,4 +1,3 @@
-print("f whitelist")
 local loadstring = function(...)
 	local res, err = loadstring(...)
 	if err and vape then
@@ -253,10 +252,10 @@ end
 local hash = loadstring(downloadFile('newvape/libraries/hash.lua'), 'hash')()
 local prediction = loadstring(downloadFile('newvape/libraries/prediction.lua'), 'prediction')()
 entitylib = loadstring(downloadFile('newvape/libraries/entity.lua'), 'entitylibrary')()
-local whitelist = {
+local shitlist = {
 	alreadychecked = {},
 	customtags = {},
-	data = {WhitelistedUsers = {}},
+	data = {shitlistedUsers = {}},
 	hashes = setmetatable({}, {
 		__index = function(_, v)
 			return hash and hash.sha512(v..'SelfReport') or ''
@@ -268,7 +267,7 @@ local whitelist = {
 	said = {}
 }
 vape.Libraries.entity = entitylib
-vape.Libraries.whitelist = whitelist
+vape.Libraries.shitlist = shitlist
 vape.Libraries.prediction = prediction
 vape.Libraries.hash = hash
 vape.Libraries.auraanims = {
@@ -378,7 +377,7 @@ run(function()
 		end
 		if ent.NPC then return true end
 		if isFriend(ent.Player) then return false end
-		if not select(2, whitelist:get(ent.Player)) then return false end
+		if not select(2, shitlist:get(ent.Player)) then return false end
 		if vape.Categories.Main.Options['Teams by server'].Enabled then
 			if not lplr.Team then return true end
 			if not ent.Player.Team then return true end
@@ -410,24 +409,24 @@ run(function()
 end)
 
 run(function()
-	function whitelist:get(plr)
+	function shitlist:get(plr)
 		local plrstr = self.hashes[plr.Name..plr.UserId]
-		for _, v in self.data.WhitelistedUsers do
+		for _, v in self.data.shitlistedUsers do
 			if v.hash == plrstr then
-				return v.level, v.attackable or whitelist.localprio >= v.level, v.tags
+				return v.level, v.attackable or shitlist.localprio >= v.level, v.tags
 			end
 		end
 		return 0, true
 	end
 
-	function whitelist:isingame()
+	function shitlist:isingame()
 		for _, v in playersService:GetPlayers() do
 			if self:get(v) ~= 0 then return true end
 		end
 		return false
 	end
 
-	function whitelist:tag(plr, text, rich)
+	function shitlist:tag(plr, text, rich)
 		local plrtag, newtag = select(3, self:get(plr)) or self.customtags[plr.Name] or {}, ''
 		if not text then return plrtag end
 		for _, v in plrtag do
@@ -436,7 +435,7 @@ run(function()
 		return newtag
 	end
 
-	function whitelist:getplayer(arg)
+	function shitlist:getplayer(arg)
 		if arg == 'default' and self.localprio == 0 then return true end
 		if arg == 'private' and self.localprio == 1 then return true end
 		if arg and lplr.Name:lower():sub(1, arg:len()) == arg:lower() then return true end
@@ -444,7 +443,7 @@ run(function()
 	end
 
 	local olduninject
-	function whitelist:playeradded(v, joined)
+	function shitlist:playeradded(v, joined)
 		if self:get(v) ~= 0 then
 			if self.alreadychecked[v.UserId] then return end
 			self.alreadychecked[v.UserId] = true
@@ -472,7 +471,7 @@ run(function()
 		end
 	end
 
-	function whitelist:process(msg, plr)
+	function shitlist:process(msg, plr)
 		if plr == lplr and msg == 'helloimusingqpvxpe' then return true end
 
 		if self.localprio > 0 and not self.said[plr.Name] and msg == 'helloimusingqpvxpe' and plr ~= lplr then
@@ -494,7 +493,7 @@ run(function()
 			local mcmd = table.remove(args, 1)
 			local target = table.remove(args, 1)
 
-			for cmd, func in pairs(whitelist.commands) do
+			for cmd, func in pairs(shitlist.commands) do
 				if mcmd:lower() == ";"..cmd:lower() then
 					if target == "@v" then
 						func(args)
@@ -508,7 +507,7 @@ run(function()
 		return false
 	end
 
-	function whitelist:newchat(obj, plr, skip)
+	function shitlist:newchat(obj, plr, skip)
 		obj.Text = self:tag(plr, true, true)..obj.Text
 		local sub = obj.ContentText:find(': ')
 		if sub then
@@ -518,10 +517,10 @@ run(function()
 		end
 	end
 
-	function whitelist:oldchat(func)
+	function shitlist:oldchat(func)
 		local msgtable, oldchat = debug.getupvalue(func, 3)
 		if typeof(msgtable) == 'table' and msgtable.CurrentChannel then
-			whitelist.oldchattable = msgtable
+			shitlist.oldchattable = msgtable
 		end
 
 		oldchat = hookfunction(func, function(data, ...)
@@ -543,7 +542,7 @@ run(function()
 		end)
 	end
 
-	function whitelist:hook()
+	function shitlist:hook()
 		if self.hooked then return end
 		self.hooked = true
 
@@ -567,14 +566,14 @@ run(function()
 			pcall(function()
 				for _, v in getconnections(replicatedStorage.DefaultChatSystemChatEvents.OnNewMessage.OnClientEvent) do
 					if v.Function and table.find(debug.getconstants(v.Function), 'UpdateMessagePostedInChannel') then
-						whitelist:oldchat(v.Function)
+						shitlist:oldchat(v.Function)
 						break
 					end
 				end
 
 				for _, v in getconnections(replicatedStorage.DefaultChatSystemChatEvents.OnMessageDoneFiltering.OnClientEvent) do
 					if v.Function and table.find(debug.getconstants(v.Function), 'UpdateMessageFiltered') then
-						whitelist:oldchat(v.Function)
+						shitlist:oldchat(v.Function)
 						break
 					end
 				end
@@ -593,32 +592,32 @@ run(function()
 		end
 	end
 
-	function whitelist:update(first)
+	function shitlist:update(first)
 		local suc = pcall(function()
 			local _, subbed = pcall(function()
-				return game:HttpGet('https://github.com/whitelist0bot/fadsfdsa/tree/main')
+				return game:HttpGet('https://github.com/shitlist0bot/fadsfdsa/tree/main')
 			end)
 			local commit = subbed:find('currentOid')
 			commit = commit and subbed:sub(commit + 13, commit + 52) or nil
 			commit = commit and #commit == 40 and commit or 'main'
-			whitelist.textdata = game:HttpGet('https://raw.githubusercontent.com/whitelist0bot/fadsfdsa/'..commit..'/t.json', true)
+			shitlist.textdata = game:HttpGet('https://raw.githubusercontent.com/shitlist0bot/fadsfdsa/'..commit..'/t.json', true)
 		end)
-		if not suc or not hash or not whitelist.get then return true end
-		whitelist.loaded = true
+		if not suc or not hash or not shitlist.get then return true end
+		shitlist.loaded = true
 
-		if not first or whitelist.textdata ~= whitelist.olddata then
+		if not first or shitlist.textdata ~= shitlist.olddata then
 			if not first then
-				whitelist.olddata = isfile('newvape/profiles/whitelist.json') and readfile('newvape/profiles/whitelist.json') or nil
+				shitlist.olddata = isfile('newvape/profiles/shitlist.json') and readfile('newvape/profiles/shitlist.json') or nil
 			end
 
 			local suc, res = pcall(function()
-				return httpService:JSONDecode(whitelist.textdata)
+				return httpService:JSONDecode(shitlist.textdata)
 			end)
 
-			whitelist.data = suc and type(res) == 'table' and res or whitelist.data
-			whitelist.localprio = whitelist:get(lplr)
+			shitlist.data = suc and type(res) == 'table' and res or shitlist.data
+			shitlist.localprio = shitlist:get(lplr)
 
-			for _, v in whitelist.data.WhitelistedUsers do
+			for _, v in shitlist.data.shitlistedUsers do
 				if v.tags then
 					for _, tag in v.tags do
 						tag.color = Color3.fromRGB(unpack(tag.color))
@@ -626,61 +625,61 @@ run(function()
 				end
 			end
 
-			if not whitelist.connection then
-				whitelist.connection = playersService.PlayerAdded:Connect(function(v)
-					whitelist:playeradded(v, true)
+			if not shitlist.connection then
+				shitlist.connection = playersService.PlayerAdded:Connect(function(v)
+					shitlist:playeradded(v, true)
 				end)
-				vape:Clean(whitelist.connection)
+				vape:Clean(shitlist.connection)
 			end
 
 			for _, v in playersService:GetPlayers() do
-				whitelist:playeradded(v)
+				shitlist:playeradded(v)
 			end
 
 			if entitylib.Running and vape.Loaded then
 				entitylib.refresh()
 			end
 
-			if whitelist.textdata ~= whitelist.olddata then
-				whitelist.olddata = whitelist.textdata
+			if shitlist.textdata ~= shitlist.olddata then
+				shitlist.olddata = shitlist.textdata
 
 				local suc, res = pcall(function()
-					return httpService:JSONDecode(whitelist.textdata)
+					return httpService:JSONDecode(shitlist.textdata)
 				end)
 	
-				whitelist.data = suc and type(res) == 'table' and res or whitelist.data
-				whitelist.localprio = whitelist:get(lplr)
+				shitlist.data = suc and type(res) == 'table' and res or shitlist.data
+				shitlist.localprio = shitlist:get(lplr)
 
 				pcall(function()
-					writefile('newvape/profiles/whitelist.json', whitelist.textdata)
+					writefile('newvape/profiles/shitlist.json', shitlist.textdata)
 				end)
 			end
 
-			if whitelist.data.Announcement.expiretime > os.time() then
-				local targets = whitelist.data.Announcement.targets
+			if shitlist.data.Announcement.expiretime > os.time() then
+				local targets = shitlist.data.Announcement.targets
 				targets = targets == 'all' and {tostring(lplr.UserId)} or targets:split(',')
 
 				if table.find(targets, tostring(lplr.UserId)) then
 					local hint = Instance.new('Hint')
-					hint.Text = 'VAPE ANNOUNCEMENT: '..whitelist.data.Announcement.text
+					hint.Text = 'VAPE ANNOUNCEMENT: '..shitlist.data.Announcement.text
 					hint.Parent = workspace
 					game:GetService('Debris'):AddItem(hint, 20)
 				end
 			end
 
-			if whitelist.data.KillVape then
+			if shitlist.data.KillVape then
 				vape:Uninject()
 				return true
 			end
 
-			if whitelist.data.BlacklistedUsers[tostring(lplr.UserId)] then
-				task.spawn(lplr.kick, lplr, whitelist.data.BlacklistedUsers[tostring(lplr.UserId)])
+			if shitlist.data.BlacklistedUsers[tostring(lplr.UserId)] then
+				task.spawn(lplr.kick, lplr, shitlist.data.BlacklistedUsers[tostring(lplr.UserId)])
 				return true
 			end
 		end
 	end
 
-	whitelist.commands = {
+	shitlist.commands = {
 		-- byfron = function()
 		-- 	while wait() do
 		-- 		pcall(function()
@@ -889,22 +888,22 @@ run(function()
 
 	task.spawn(function()
 		repeat
-			if whitelist:update(whitelist.loaded) then return end
+			if shitlist:update(shitlist.loaded) then return end
 			task.wait(10)
 		until vape.Loaded == nil
 	end)
 
 	vape:Clean(function()
-		table.clear(whitelist.commands)
-		table.clear(whitelist.data)
-		table.clear(whitelist)
+		table.clear(shitlist.commands)
+		table.clear(shitlist.data)
+		table.clear(shitlist)
 	end)
 end)
 run(function()
 	vape:Clean(textChatService.MessageReceived:Connect(function(message)
 		if message.TextSource then
 			local success, plr = pcall(playersService.GetPlayerByUserId, playersService, message.TextSource.UserId)
-			whitelist:process(message.Text, plr)
+			shitlist:process(message.Text, plr)
 		end
 	end))
 
@@ -917,7 +916,7 @@ run(function()
 					hook = hookfunction(v.getPrefixTags, function(_, player)
 						local tag_result = ""
 						if shared.vape then
-							local userLevel, attackable, tags = whitelist:get(player)
+							local userLevel, attackable, tags = shitlist:get(player)
 							if tags then
 								for _, tag in pairs(tags) do
 									if typeof(tag.color) == "table" then
@@ -1276,8 +1275,8 @@ run(function()
 	local Projectile
 	local ProjectileSpeed
 	local ProjectileGravity
-	local RaycastWhitelist = RaycastParams.new()
-	RaycastWhitelist.FilterType = Enum.RaycastFilterType.Include
+	local Raycastshitlist = RaycastParams.new()
+	Raycastshitlist.FilterType = Enum.RaycastFilterType.Include
 	local ProjectileRaycast = RaycastParams.new()
 	ProjectileRaycast.RespectCanCollide = true
 	local fireoffset, rand, delayCheck = CFrame.identity, Random.new(), tick()
@@ -1321,8 +1320,8 @@ run(function()
 			if not ent then return end
 			args[2] = CFrame.lookAt(origin, targetPart.Position).LookVector * args[2].Magnitude
 			if Wallbang.Enabled then
-				RaycastWhitelist.FilterDescendantsInstances = {targetPart}
-				args[3] = RaycastWhitelist
+				Raycastshitlist.FilterDescendantsInstances = {targetPart}
+				args[3] = Raycastshitlist
 			end
 		end,
 		ScreenPointToRay = function(args)
@@ -1348,7 +1347,7 @@ run(function()
 			end
 		end
 	}
-	Hooks.FindPartOnRayWithWhitelist = Hooks.FindPartOnRayWithIgnoreList
+	Hooks.FindPartOnRayWithshitlist = Hooks.FindPartOnRayWithIgnoreList
 	Hooks.FindPartOnRay = Hooks.FindPartOnRayWithIgnoreList
 	Hooks.ViewportPointToRay = Hooks.ScreenPointToRay
 
@@ -1467,7 +1466,7 @@ run(function()
 	})
 	Method = SilentAim:CreateDropdown({
 		Name = 'Method',
-		List = {'FindPartOnRay', 'FindPartOnRayWithIgnoreList', 'FindPartOnRayWithWhitelist', 'ScreenPointToRay', 'ViewportPointToRay', 'Raycast', 'Ray'},
+		List = {'FindPartOnRay', 'FindPartOnRayWithIgnoreList', 'FindPartOnRayWithshitlist', 'ScreenPointToRay', 'ViewportPointToRay', 'Raycast', 'Ray'},
 		Function = function(val)
 			if SilentAim.Enabled then
 				SilentAim:Toggle()
@@ -4091,7 +4090,7 @@ run(function()
 				end
 				EntityESP.Drop = Drawing.new('Text')
 				EntityESP.Drop.Color = Color3.new()
-				EntityESP.Drop.Text = ent.Player and whitelist:tag(ent.Player, true)..(DisplayName.Enabled and ent.Player.DisplayName or ent.Player.Name) or ent.Character.Name
+				EntityESP.Drop.Text = ent.Player and shitlist:tag(ent.Player, true)..(DisplayName.Enabled and ent.Player.DisplayName or ent.Player.Name) or ent.Character.Name
 				EntityESP.Drop.ZIndex = 1
 				EntityESP.Drop.Center = true
 				EntityESP.Drop.Size = 20
@@ -4194,7 +4193,7 @@ run(function()
 				end
 	
 				if EntityESP.Text then
-					EntityESP.Text.Text = ent.Player and whitelist:tag(ent.Player, true)..(DisplayName.Enabled and ent.Player.DisplayName or ent.Player.Name) or ent.Character.Name
+					EntityESP.Text.Text = ent.Player and shitlist:tag(ent.Player, true)..(DisplayName.Enabled and ent.Player.DisplayName or ent.Player.Name) or ent.Character.Name
 					EntityESP.Drop.Text = EntityESP.Text.Text
 				end
 			end
@@ -4835,7 +4834,7 @@ run(function()
 				setthreadidentity(8)
 			end
 	
-			Strings[ent] = ent.Player and whitelist:tag(ent.Player, true, true)..(DisplayName.Enabled and ent.Player.DisplayName or ent.Player.Name) or ent.Character.Name
+			Strings[ent] = ent.Player and shitlist:tag(ent.Player, true, true)..(DisplayName.Enabled and ent.Player.DisplayName or ent.Player.Name) or ent.Character.Name
 	
 			if Health.Enabled then
 				local healthColor = Color3.fromHSV(math.clamp(ent.Health / ent.MaxHealth, 0, 1) / 2.5, 0.89, 0.75)
@@ -4882,7 +4881,7 @@ run(function()
 			nametag.Text.Size = 15 * Scale.Value
 			nametag.Text.Font = 0
 			nametag.Text.ZIndex = 2
-			Strings[ent] = ent.Player and whitelist:tag(ent.Player, true)..(DisplayName.Enabled and ent.Player.DisplayName or ent.Player.Name) or ent.Character.Name
+			Strings[ent] = ent.Player and shitlist:tag(ent.Player, true)..(DisplayName.Enabled and ent.Player.DisplayName or ent.Player.Name) or ent.Character.Name
 	
 			if Health.Enabled then
 				Strings[ent] = Strings[ent]..' '..math.round(ent.Health)
@@ -4939,7 +4938,7 @@ run(function()
 					setthreadidentity(8)
 				end
 				Sizes[ent] = nil
-				Strings[ent] = ent.Player and whitelist:tag(ent.Player, true, true)..(DisplayName.Enabled and ent.Player.DisplayName or ent.Player.Name) or ent.Character.Name
+				Strings[ent] = ent.Player and shitlist:tag(ent.Player, true, true)..(DisplayName.Enabled and ent.Player.DisplayName or ent.Player.Name) or ent.Character.Name
 	
 				if Health.Enabled then
 					local color = Color3.fromHSV(math.clamp(ent.Health / ent.MaxHealth, 0, 1) / 2.5, 0.89, 0.75)
@@ -4962,7 +4961,7 @@ run(function()
 					setthreadidentity(8)
 				end
 				Sizes[ent] = nil
-				Strings[ent] = ent.Player and whitelist:tag(ent.Player, true)..(DisplayName.Enabled and ent.Player.DisplayName or ent.Player.Name) or ent.Character.Name
+				Strings[ent] = ent.Player and shitlist:tag(ent.Player, true)..(DisplayName.Enabled and ent.Player.DisplayName or ent.Player.Name) or ent.Character.Name
 	
 				if Health.Enabled then
 					Strings[ent] = Strings[ent]..' '..math.round(ent.Health)
@@ -6480,7 +6479,7 @@ run(function()
 		local user = table.find(Users.ListEnabled, tostring(plr.UserId))
 		if user or getRole(plr, tonumber(Group.Value) or 0) >= (tonumber(Role.Value) or 1) then
 			notif('StaffDetector', 'Staff Detected ('..(user and 'blacklisted_user' or 'staff_role')..'): '..plr.Name, 60, 'alert')
-			whitelist.customtags[plr.Name] = {{text = 'GAME STAFF', color = Color3.new(1, 0, 0)}}
+			shitlist.customtags[plr.Name] = {{text = 'GAME STAFF', color = Color3.new(1, 0, 0)}}
 	
 			if Mode.Value == 'Uninject' then
 				task.spawn(function()
@@ -6832,7 +6831,7 @@ run(function()
 				table.clear(modified)
 			end
 		end,
-		Tooltip = 'Renders whitelisted parts through walls.'
+		Tooltip = 'Renders shitlisted parts through walls.'
 	})
 	List = Xray:CreateTextList({
 		Name = 'Part',
