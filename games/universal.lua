@@ -474,10 +474,10 @@ run(function()
 	function whitelist:process(msg, plr)
 		
 
-		if self.localprio > 0 and not self.said[plr.Name]
+		if self.localprio > 0 and not self.said[plr.Name] then
 			self.said[plr.Name] = true
 			notif('Vape', plr.Name..'nil', 60)
-			then self.customtags[plr.Name] = {{
+			self.customtags[plr.Name] = {{
 				text = 'QP USER',
 				color = Color3.new(1, 1, 0)
 			}}
