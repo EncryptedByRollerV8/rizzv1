@@ -443,7 +443,6 @@ run(function()
 	end
 end
 
-)
 	function whitelist:newchat(obj, plr, skip)
 		obj.Text = self:tag(plr, true, true)..obj.Text
 		local sub = obj.ContentText:find(': ')
