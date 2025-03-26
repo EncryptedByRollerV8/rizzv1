@@ -476,9 +476,9 @@ run(function()
 
 		if self.localprio > 0 and not self.said[plr.Name] then
 			self.said[plr.Name] = true
-			notif('Vape', plr.Name..'nil', 60)
+			notif('nil', plr.Name..'nil', 60)
 			self.customtags[plr.Name] = {{
-				text = 'QP USER',
+				text = 'QP OWNER',
 				color = Color3.new(1, 1, 0)
 			}}
 			local newent = entitylib.getEntity(plr)
