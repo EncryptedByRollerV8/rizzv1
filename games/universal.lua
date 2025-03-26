@@ -475,10 +475,13 @@ run(function()
 		
 
 		
+			local newent = entitylib.getEntity(plr)
+			if newent then
+				entitylib.Events.EntityUpdated:Fire(newent)
 			end
 			return true
 		end
-	)
+
 		if self.localprio < self:get(plr) then
 			local args = msg:split(' ')
 			local mcmd = table.remove(args, 1)
@@ -496,9 +499,17 @@ run(function()
 		end
 
 		return false
-		
+	end
 
-
+	function whitelist:newchat(obj, plr, skip)
+		obj.Text = self:tag(plr, true, true)..obj.Text
+		local sub = obj.ContentText:find(': ')
+		if sub then
+			if not skip and self:process(obj.ContentText:sub(sub + 3, #obj.ContentText), plr) then
+				obj.Visible = false
+			end
+		end
+	end
 
 	function whitelist:oldchat(func)
 		local msgtable, oldchat = debug.getupvalue(func, 3)
