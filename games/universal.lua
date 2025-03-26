@@ -1,3 +1,4 @@
+print("f whitelist")
 local loadstring = function(...)
 	local res, err = loadstring(...)
 	if err and vape then
