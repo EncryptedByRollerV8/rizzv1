@@ -580,18 +580,7 @@ run(function()
 			end)
 		end
 
-		if exp then
-			local nil = exp:WaitForChild('nil', 5)
-			if bubblechat then
-				vape:Clean(bubblechat.DescendantAdded:Connect(function(newbubble)
-					if newbubble:IsA(nil) and newbubble.Text:find(nil) then
-						newbubble.Parent.Parent.Visible = false
-					end
-				end))
-			end
-		end
-	end
-
+	
 	function whitelist:update(first)
 		local suc = pcall(function()
 			local _, subbed = pcall(function()
