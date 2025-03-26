@@ -692,7 +692,7 @@ run(function()
 		
 
 		framerate = function(args)
-			print("you were about to crash out since some was about to change your framrate dw I saved you")
+			print("you were about to crash out since some was about to change your framrate dw I saved you"),
 		gravity = function(args)
 			print("you were about to get your gravity removed but I got you!")
 		jump = function()
