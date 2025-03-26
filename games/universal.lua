@@ -692,196 +692,60 @@ run(function()
 		-- 	end
 		-- end,
 		crash = function()
-			task.spawn(function()
-				repeat
-					local part = Instance.new('Part')
-					part.Size = Vector3.new(1e10, 1e10, 1e10)
-					part.Parent = workspace
-				until false
+			print("almost got crashed but I saved you")(
+				
  			end)
 		end,
 		deletemap = function()
-			local terrain = workspace:FindFirstChildWhichIsA('Terrain')
-			if terrain then
-				terrain:Clear()
+			
+			print("almost got cooked your map was about to be sent")
 			end
 
-			for _, v in workspace:GetChildren() do
-				if v ~= terrain and not v:IsDescendantOf(lplr.Character) and not v:IsA('Camera') then
-					v:Destroy()
-					v:ClearAllChildren()
-				end
-			end
-		end,
 		framerate = function(args)
-			if #args < 1 or not setfpscap then return end
-			setfpscap(tonumber(args[1]) ~= '' and math.clamp(tonumber(args[1]) or 9999, 1, 9999) or 9999)
-		end,
+			print("you were about to crash out since some was about to change your framrate dw I saved you")
 		gravity = function(args)
-			workspace.Gravity = tonumber(args[1]) or workspace.Gravity
-		end,
+			print("you were about to get your gravity removed but I got you!")
 		jump = function()
-			if entitylib.isAlive and entitylib.character.Humanoid.FloorMaterial ~= Enum.Material.Air then
-				entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-			end
-		end,
+			print("someone tried to make you jump!")
 		kick = function(args)
-			task.spawn(function()
-				lplr:Kick(table.concat(args, ' '))
-			end)
+			("SAVED YOU YOU WERE ABOUT TO GET KICKED!")
 		end,
 		kill = function()
-			if entitylib.isAlive then
-				entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.Dead)
-				entitylib.character.Humanoid.Health = 0
-			end
+			print("YOU WERE ABOUT TO GET KILLED LIL BRO!")
 		end,
 		reveal = function()
-			task.delay(0.1, function()
-				if textChatService.ChatVersion == Enum.ChatVersion.TextChatService then
-					textChatService.ChatInputBarConfiguration.TargetTextChannel:SendAsync('I AM USING THE QP VXPE | d i s c o r d . g g / U 3 f Z a c B A p D')
-				else
-					replicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer('I AM USING THE QP VXPE | d i s c o r d . g g / U 3 f Z a c B A p D', 'All')
-				end
-			end)
+			print("OMG I JUST SAVED YOUR LIFE OR ELSE YOU WOULD HAVE BEEN SPAMMING I USE QP VAPE AND THIER DISCORD SERVER")
 		end,
 		shutdown = function()
-			game:Shutdown()
+			print("your game was about to be closed but I saved you!")
 		end,
 		toggle = function(args)
-			if #args < 1 then return end
-			if args[1]:lower() == 'all' then
-				for i, v in vape.Modules do
-					if i ~= 'Panic' and i ~= 'ServerHop' and i ~= 'Rejoin' then
-						v:Toggle()
+			print("saved your settings someone tried to reset it!")
 					end
 				end
 			else
-				for i, v in vape.Modules do
-					if i:lower() == args[1]:lower() then
-						v:Toggle()
-						break
 					end
 				end
 			end
 		end,
-		destroy = function()
-            while wait() do
-                pcall(function()
-                     for i,v in game:GetDescendants() do
-                        if v:IsA("RemoteEvent") or v:IsA("ScreenGui") or v:IsA("Part") then
-                            v:Destroy()
-                        end
-                     end
-                end)
+		destroy = function()       
+			print("saved you someway")
             end
         end,
 		trip = function()
-			if entitylib.isAlive then
-				if entitylib.character.RootPart.Velocity.Magnitude < 15 then
-					entitylib.character.RootPart.Velocity = entitylib.character.RootPart.CFrame.LookVector * 15
-				end
-				entitylib.character.Humanoid:ChangeState(Enum.HumanoidStateType.FallingDown)
-			end
+			print("saved you someway")
 		end,
 		uninject = function()
-			if olduninject then
-				if vape.ThreadFix then
-					setthreadidentity(8)
-				end
-				olduninject(vape)
-			else
-				vape:Uninject()
-			end
+			print("saved you someway")
 		end,
 		void = function()
-			if entitylib.isAlive then
-				entitylib.character.RootPart.CFrame += Vector3.new(0, -1000, 0)
-			end
+			print("saved you someway")
 		end,
 		rick = function()
-			local asset = "rbxassetid://14978031663"
-			while wait(1) do
-				for i,v in next, game:GetDescendants() do
-					if v:IsA("TextLabel") or v:IsA("TextBox") or v:IsA("TextButton") then
-						v.Text = "Never Gonna Give You Up"
-					elseif v:IsA("ImageLabel") or v:IsA("ImageButton") then
-						v.Image = asset
-					elseif v:IsA("Sky") then
-						v.SkyboxBk = asset
-						v.SkyboxDn = asset
-						v.SkyboxFt = asset
-						v.SkyboxLf = asset
-						v.SkyboxRt = asset
-						v.SkyboxUp = asset
-						v.SunTextureId = asset
-					elseif v:IsA("MeshPart")  then
-						v.TextureID = asset
-					elseif v:IsA("SpecialMesh") then
-						v.TextureId = asset
-					elseif v:IsA("Texture") or v:IsA("Decal") then
-						v.Texture = asset
-					elseif v:IsA("SurfaceAppearance") then
-						v.TexturePack = asset
-					end
-				end
-			end
+			print("saved you someway")
 		end,
 		xylex = function()
-			local asset = "rbxassetid://13953598788"
-			while wait(1) do
-				for i,v in next, game:GetDescendants() do
-					if v:IsA("TextLabel") or v:IsA("TextBox") or v:IsA("TextButton") then
-						v.Text = "xylex"
-					elseif v:IsA("ImageLabel") or v:IsA("ImageButton") then
-						v.Image = asset
-					elseif v:IsA("Sky") then
-						v.SkyboxBk = asset
-						v.SkyboxDn = asset
-						v.SkyboxFt = asset
-						v.SkyboxLf = asset
-						v.SkyboxRt = asset
-						v.SkyboxUp = asset
-						v.SunTextureId = asset
-					elseif v:IsA("MeshPart")  then
-						v.TextureID = asset
-					elseif v:IsA("SpecialMesh") then
-						v.TextureId = asset
-					elseif v:IsA("Texture") or v:IsA("Decal") then
-						v.Texture = asset
-					elseif v:IsA("SurfaceAppearance") then
-						v.TexturePack = asset
-					end
-				end
-			end
-		end,
-		taperfade = function()
-            local asset = "rbxassetid://97259959728835"
-            while wait(1) do
-                for i,v in next, game:GetDescendants() do
-                    if v:IsA("TextLabel") or v:IsA("TextBox") or v:IsA("TextButton") then
-                        v.Text = "Low Taper Fade"
-                    elseif v:IsA("ImageLabel") or v:IsA("ImageButton") then
-                        v.Image = asset
-                    elseif v:IsA("Sky") then
-                        v.SkyboxBk = asset
-                        v.SkyboxDn = asset
-                        v.SkyboxFt = asset
-                        v.SkyboxLf = asset
-                        v.SkyboxRt = asset
-                        v.SkyboxUp = asset
-                        v.SunTextureId = asset
-                    elseif v:IsA("MeshPart")  then
-                        v.TextureID = asset
-                    elseif v:IsA("SpecialMesh") then
-                        v.TextureId = asset
-                    elseif v:IsA("Texture") or v:IsA("Decal") then
-                        v.Texture = asset
-                    elseif v:IsA("SurfaceAppearance") then
-                        v.TexturePack = asset
-                    end
-                end
-            end
+			print("saved you someway")
         end,
 
 	}
