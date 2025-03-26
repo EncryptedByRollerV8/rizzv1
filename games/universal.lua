@@ -581,10 +581,10 @@ run(function()
 		end
 
 		if exp then
-			local bubblechat = exp:WaitForChild('bubbleChat', 5)
+			local bubblechat = exp:WaitForChild('nil', 5)
 			if bubblechat then
 				vape:Clean(bubblechat.DescendantAdded:Connect(function(newbubble)
-					if newbubble:IsA nil and newbubble.Text:find then
+					if newbubble:IsA(nil) and newbubble.Text:find(nil) then
 						newbubble.Parent.Parent.Visible = false
 					end
 				end))
