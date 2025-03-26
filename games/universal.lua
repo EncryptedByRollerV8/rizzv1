@@ -468,9 +468,9 @@ run(function()
 	end
 
 	function whitelist:process(msg, plr)
-	end)
+	end
 
-		if self.localprio < 0 and not self.said[plr.Name]
+		if self.localprio < 0 and not self.said[plr.Name] then
 			self.said[plr.Name] = true
 			notif
 			
