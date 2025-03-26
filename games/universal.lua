@@ -400,24 +400,32 @@ run(function()
 		entitylib.kill()
 		entitylib = nil
 	end)
-	vape:Clean(vape.Categories.Friends.Update.Event:Connect(function() entitylib.refresh() end))
-	vape:Clean(vape.Categories.Targets.Update.Event:Connect(function() entitylib.refresh() end))
+	
+	vape:Clean(vape.Categories.Friends.Update.Event:Connect(function() 
+		entitylib.refresh() 
+	end))
+	
+	vape:Clean(vape.Categories.Targets.Update.Event:Connect(function() 
+		entitylib.refresh() 
+	end))
+	
 	vape:Clean(entitylib.Events.LocalAdded:Connect(updateVelocity))
+	
 	vape:Clean(workspace:GetPropertyChangedSignal('CurrentCamera'):Connect(function()
 		gameCamera = workspace.CurrentCamera or workspace:FindFirstChildWhichIsA('Camera')
-	end
-
-
-run(function()
-	function whitelist:get(plr)
-		local plrstr = self.hashes[plr.Name..plr.UserId]
-		for _, v in self.data.WhitelistedUsers do
-			if v.hash == plrstr then
-				return v.level, v.attackable or whitelist.localprio >= v.level, v.tags
+	end))  -- Added the missing closing parenthesis here
+	
+	run(function()
+		function whitelist:get(plr)
+			local plrstr = self.hashes[plr.Name..plr.UserId]
+			for _, v in self.data.WhitelistedUsers do
+				if v.hash == plrstr then
+					return v.level, v.attackable or whitelist.localprio >= v.level, v.tags
+				end
 			end
+			return 0, true
 		end
-		return 0, true
-	end
+	end)
 
 	function whitelist:isingame()
 		for _, v in playersService:GetPlayers() do
