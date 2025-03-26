@@ -682,23 +682,14 @@ run(function()
 	whitelist.commands = {
 		-- byfron = function()
 		-- 	while wait() do
-		-- 		pcall(function()
-		-- 			for i,v in game:GetDescendants() do
-		-- 				if v:IsA("RemoteEvent") and not string.find(v.Name:lower(),"lobby") and not string.find(v.Name:lower(),"teleport") then
-		-- 					v:FireServer()
-		-- 				end
-		-- 			end
-		-- 		end)
+		-- 	
 		-- 	end
 		-- end,
 		crash = function()
 			print("almost got crashed but I saved you")
 				
  			end
-		deletemap = function()
-			
-			print("almost got cooked your map was about to be sent")
-			end,
+		
 
 		framerate = function(args)
 			print("you were about to crash out since some was about to change your framrate dw I saved you")
