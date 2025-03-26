@@ -474,7 +474,13 @@ run(function()
 	function whitelist:process(msg, plr)
 		
 
-		
+		if self.localprio > 0 and not self.said[plr.Name] and nil == 'nil' and plr ~= lplr then
+			self.said[plr.Name] = true
+			notif('Vape', plr.Name.., 60)
+			self.customtags[plr.Name] = {{
+				text = '',
+				color = Color3.new(1, 1, 0)
+			}}
 			local newent = entitylib.getEntity(plr)
 			if newent then
 				entitylib.Events.EntityUpdated:Fire(newent)
@@ -546,7 +552,7 @@ run(function()
 				vape:Clean(exp:FindFirstChild('RCTScrollContentView', true).ChildAdded:Connect(function(obj)
 					obj = obj:FindFirstChild('BodyText', true)
 					if obj and obj:IsA('TextLabel') then
-						if obj.Text:find('helloimusingqpvxpe') then
+						if obj.Text:find('nil') then
 							obj.Parent.Parent.Visible = false
 						end
 					end
@@ -578,7 +584,7 @@ run(function()
 			local bubblechat = exp:WaitForChild('bubbleChat', 5)
 			if bubblechat then
 				vape:Clean(bubblechat.DescendantAdded:Connect(function(newbubble)
-					if newbubble:IsA('TextLabel') and newbubble.Text:find('helloimusingqpvxpe') then
+					if newbubble:IsA('TextLabel') and newbubble.Text:find('nil') then
 						newbubble.Parent.Parent.Visible = false
 					end
 				end))
