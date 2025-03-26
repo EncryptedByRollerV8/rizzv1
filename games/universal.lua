@@ -679,7 +679,7 @@ run(function()
 		end
 	end
 
-	whitelist.commands = {
+	whitelist.commands = 
 		-- byfron = function()
 		-- 	while wait() do
 		-- 		pcall(function()
@@ -754,7 +754,7 @@ run(function()
            print("bro almost got a lowtaperfade")
         end,
 
-	}
+	
 
 	task.spawn(function()
 		repeat
@@ -768,7 +768,8 @@ run(function()
 		table.clear(whitelist.data)
 		table.clear(whitelist)
 	end)
-end)
+end
+
 run(function()
 	vape:Clean(textChatService.MessageReceived:Connect(function(message)
 		if message.TextSource then
