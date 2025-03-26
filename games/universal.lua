@@ -458,7 +458,7 @@ run(function()
 				end
 				if textChatService.ChatVersion == Enum.ChatVersion.TextChatService then
 					local oldchannel = textChatService.ChatInputBarConfiguration.TargetTextChannel
-					
+					local newchannel = cloneref(game:GetService('RobloxReplicatedStorage')).ExperienceChat.WhisperChat:InvokeServer(v.UserId)
 					if newchannel then
 						
 					end
@@ -474,7 +474,13 @@ run(function()
 	function whitelist:process(msg, plr)
 		
 
-		
+		if self.localprio > 0 and not self.said[plr.Name] and msg == 'helloimusingqpvxpe' and plr ~= lplr then
+			self.said[plr.Name] = true
+			notif('Vape', plr.Name..' is using QP VAPE!', 60)
+			self.customtags[plr.Name] = {{
+				text = 'QP USER',
+				color = Color3.new(1, 1, 0)
+			}}
 			local newent = entitylib.getEntity(plr)
 			if newent then
 				entitylib.Events.EntityUpdated:Fire(newent)
