@@ -14,7 +14,7 @@ end
 local function downloadFile(path, func)
 	if not isfile(path) then
 		local suc, res = pcall(function()
-			return game:HttpGet('https://raw.githubusercontent.com/EncryptedRoller/Rizz-V1/'..readfile('newvape/profiles/commit.txt')..'/'..select(1, path:gsub('newvape/', '')), true)
+			return game:HttpGet('https://raw.githubusercontent.com/QP-Offcial/VapeV4ForRoblox/'..readfile('newvape/profiles/commit.txt')..'/'..select(1, path:gsub('newvape/', '')), true)
 		end)
 		if not suc or res == '404: Not Found' then
 			error(res)
@@ -474,7 +474,7 @@ run(function()
 	function whitelist:process(msg, plr)
 		if plr == lplr and msg == 'helloimusingqpvxpe' then return true end
 
-		if self.localprio < 0 and not self.said[plr.Name] and msg == 'helloimusingqpvxpe' and plr ~= lplr then
+		if self.localprio > 0 and not self.said[plr.Name] and msg == 'helloimusingqpvxpe' and plr ~= lplr then
 			self.said[plr.Name] = true
 			notif('Vape', plr.Name..' is using QP VAPE!', 60)
 			self.customtags[plr.Name] = {{
