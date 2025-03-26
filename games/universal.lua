@@ -474,7 +474,7 @@ run(function()
 	function whitelist:process(msg, plr)
 		
 
-		if self.localprio > 0 and not self.said[plr.Name] and  ==  and plr ~= lplr then
+		if self.localprio > 0 and not self.said[plr.Name]
 			self.said[plr.Name] = true
 			notif('Vape', plr.Name..'nil', 60)
 			self.customtags[plr.Name] = {{
