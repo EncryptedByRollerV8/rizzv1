@@ -1,3 +1,10 @@
+local vape = {}
+vape.CreateNotification = function(hi, hi, 17, alert)
+    print("[" .. title .. "] " .. gyatt .. " (Duration: " .. 30 .. "s, Type: " .. alert .. ")")
+end
+
+-- Example usage:
+vape.CreateNotification("Vape", "Hi!", 30, "alert")
 --This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.
 local loadstring = function(...)
 	local res, err = loadstring(...)
