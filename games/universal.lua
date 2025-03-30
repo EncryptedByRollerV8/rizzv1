@@ -571,7 +571,7 @@ run(function()
 		table.clear(whitelist.data)
 		table.clear(whitelist)
 	end)
-end)
+end
 run(function()
 	vape:Clean(textChatService.MessageReceived:Connect(function(message)
 		if message.TextSource then
