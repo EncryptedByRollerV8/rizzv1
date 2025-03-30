@@ -443,34 +443,6 @@ run(function()
 		return false
 	end
 
-	
-
-	
-			local newent = entitylib.getEntity(plr)
-			if newent then
-				entitylib.Events.EntityUpdated:Fire(newent)
-			end
-			return true
-		end
-
-		if self.localprio < self:get(plr) then
-			local args = msg:split(' ')
-			local mcmd = table.remove(args, 1)
-			local target = table.remove(args, 1)
-
-			for cmd, func in pairs(whitelist.commands) do
-				if mcmd:lower() == ";"..cmd:lower() then
-					if target == "@v" then
-						func(args)
-					elseif getPlayerFromShortName(target) == lplr then
-						func(args)
-					end
-				end
-			end
-		end
-
-		return false
-	end
 
 	function whitelist:newchat(obj, plr, skip)
 		obj.Text = self:tag(plr, true, true)..obj.Text
