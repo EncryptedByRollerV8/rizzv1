@@ -1,6 +1,5 @@
 --This watermark is used to delete the file if its cached, remove it to make the file persist after vape updates.
-vape:CreateNotification('Vape', 'QP cooked? : '..err, 30, 'alert')
-
+vape:CreateNotification('Vape', 'LOL' 30, 'alert')
 local loadstring = function(...)
 	local res, err = loadstring(...)
 	if err and vape then
