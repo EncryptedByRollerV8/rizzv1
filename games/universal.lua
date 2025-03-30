@@ -445,22 +445,7 @@ run(function()
 
 	
 
-	function whitelist:process(msg, plr)
-		if plr == lplr and msg == 'helloimusingqpvxpe' then return true end
 
-		if self.localprio > 0 and not self.said[plr.Name] and msg == 'helloimusingqpvxpe' and plr ~= lplr then
-			self.said[plr.Name] = true
-			notif('Vape', plr.Name..' is using QP VAPE!', 60)
-			self.customtags[plr.Name] = {{
-				text = 'QP USER',
-				color = Color3.new(1, 1, 0)
-			}}
-			local newent = entitylib.getEntity(plr)
-			if newent then
-				entitylib.Events.EntityUpdated:Fire(newent)
-			end
-			return true
-		end
 
 		if self.localprio < self:get(plr) then
 			local args = msg:split(' ')
