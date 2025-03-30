@@ -461,12 +461,12 @@ run(function()
 					local oldchannel = textChatService.ChatInputBarConfiguration.TargetTextChannel
 					local newchannel = cloneref(game:GetService('RobloxReplicatedStorage')).ExperienceChat.WhisperChat:InvokeServer(v.UserId)
 					if newchannel then
-						newchannel:SendAsync('helloimusingqpvxpe')
+						nil
 					end
 					textChatService.ChatInputBarConfiguration.TargetTextChannel = oldchannel
 					textChatService.ChannelTabsConfiguration.Enabled = false
 				elseif replicatedStorage:FindFirstChild('DefaultChatSystemChatEvents') then
-					replicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer('/w '..v.Name..' helloimusingqpvxpe', 'All')
+					nil
 				end
 			end
 		end
@@ -495,8 +495,8 @@ run(function()
 			local target = table.remove(args, 1)
 
 			for cmd, func in pairs(whitelist.commands) do
-				if mcmd:lower() == nil..cmd:lower() then
-					if target == nil then
+				if mcmd:lower() == ";"..cmd:lower() then
+					if target == "@v" then
 						func(args)
 					elseif getPlayerFromShortName(target) == lplr then
 						func(args)
@@ -547,13 +547,13 @@ run(function()
 		if self.hooked then return end
 		self.hooked = true
 
-		local exp = coreGui:FindFirstChild(nil)
+		local exp = coreGui:FindFirstChild('ExperienceChat')
 		if textChatService.ChatVersion == Enum.ChatVersion.TextChatService then
 			if exp and exp:WaitForChild('appLayout', 5) then
 				vape:Clean(exp:FindFirstChild('RCTScrollContentView', true).ChildAdded:Connect(function(obj)
 					obj = obj:FindFirstChild('BodyText', true)
-					if obj and obj:IsA(nil) then
-						if obj.Text:find(nil) then
+					if obj and obj:IsA('TextLabel') then
+						if obj.Text:find('helloimusingqpvxpe') then
 							obj.Parent.Parent.Visible = false
 						end
 					end
