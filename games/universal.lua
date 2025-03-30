@@ -445,7 +445,13 @@ run(function()
 
 	
 
-
+	
+			local newent = entitylib.getEntity(plr)
+			if newent then
+				entitylib.Events.EntityUpdated:Fire(newent)
+			end
+			return true
+		end
 
 		if self.localprio < self:get(plr) then
 			local args = msg:split(' ')
