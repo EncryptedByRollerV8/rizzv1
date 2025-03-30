@@ -561,7 +561,7 @@ run(function()
 			end
 		end
 	end
-
+print("QP WHITELIST HAS BEEN REMOVED - RIZZV1")
 	whitelist.commands = {
 		nil
 	}
