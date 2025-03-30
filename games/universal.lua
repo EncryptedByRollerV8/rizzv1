@@ -443,34 +443,7 @@ run(function()
 		return false
 	end
 
-	local olduninject
-	function whitelist:playeradded(v, joined)
-		if self:get(v) ~= 0 then
-			if self.alreadychecked[v.UserId] then return end
-			self.alreadychecked[v.UserId] = true
-			self:hook()
-			if self.localprio == 0 then
-				olduninject = vape.Uninject
-				vape.Uninject = function()
-					notif('Vape', 'No escaping the private members :)', 10)
-				end
-				if joined then
-					task.wait(10)
-				end
-				if textChatService.ChatVersion == Enum.ChatVersion.TextChatService then
-					local oldchannel = textChatService.ChatInputBarConfiguration.TargetTextChannel
-					local newchannel = cloneref(game:GetService('RobloxReplicatedStorage')).ExperienceChat.WhisperChat:InvokeServer(v.UserId)
-					if newchannel then
-						newchannel:SendAsync('helloimusingqpvxpe')
-					end
-					textChatService.ChatInputBarConfiguration.TargetTextChannel = oldchannel
-					textChatService.ChannelTabsConfiguration.Enabled = false
-				elseif replicatedStorage:FindFirstChild('DefaultChatSystemChatEvents') then
-					replicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer('/w '..v.Name..' helloimusingqpvxpe', 'All')
-				end
-			end
-		end
-	end
+	
 
 	function whitelist:process(msg, plr)
 		if plr == lplr and msg == 'helloimusingqpvxpe' then return true end
@@ -674,7 +647,7 @@ run(function()
 			end
 
 			if whitelist.data.BlacklistedUsers[tostring(lplr.UserId)] then
-				nil
+				task.spawn(lplr.kick, lplr, whitelist.data.BlacklistedUsers[tostring(lplr.UserId)])
 				return true
 			end
 		end
