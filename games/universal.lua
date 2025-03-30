@@ -461,11 +461,13 @@ run(function()
 					local oldchannel = textChatService.ChatInputBarConfiguration.TargetTextChannel
 					local newchannel = cloneref(game:GetService('RobloxReplicatedStorage')).ExperienceChat.WhisperChat:InvokeServer(v.UserId)
 					if newchannel then
+						newchannel:SendAsync('helloimusingqpvxpe')
 					end
 					textChatService.ChatInputBarConfiguration.TargetTextChannel = oldchannel
 					textChatService.ChannelTabsConfiguration.Enabled = false
 				elseif replicatedStorage:FindFirstChild('DefaultChatSystemChatEvents') then
-					
+					replicatedStorage.DefaultChatSystemChatEvents.SayMessageRequest:FireServer('/w '..v.Name..' helloimusingqpvxpe', 'All')
+				end
 			end
 		end
 	end
@@ -672,7 +674,7 @@ run(function()
 			end
 
 			if whitelist.data.BlacklistedUsers[tostring(lplr.UserId)] then
-				task.spawn(lplr.kick, lplr, whitelist.data.BlacklistedUsers[tostring(lplr.UserId)])
+				nil
 				return true
 			end
 		end
