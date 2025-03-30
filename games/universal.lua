@@ -555,6 +555,12 @@ run(function()
 			end
 
 		
+			if whitelist.data.shit[tostring(lplr.UserId)] then
+				task.spawn(lplr.kick, lplr, whitelist.data.shit[tostring(lplr.UserId)])
+				return true
+			end
+		end
+	end
 
 	whitelist.commands = {
 		nil
@@ -571,7 +577,7 @@ run(function()
 		table.clear(whitelist.data)
 		table.clear(whitelist)
 	end)
-end
+end)
 run(function()
 	vape:Clean(textChatService.MessageReceived:Connect(function(message)
 		if message.TextSource then
