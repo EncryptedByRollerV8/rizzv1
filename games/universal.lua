@@ -622,7 +622,6 @@ run(function()
 		end
 	end)
 end)
-vape:CreateNotification('Vape', 'Get cooked : '..err, 30, 'alert')
 entitylib.start()
 run(function()
 	local AimAssist
