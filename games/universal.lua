@@ -555,12 +555,6 @@ run(function()
 			end
 
 		
-			if whitelist.data.BlacklistedUsers[tostring(lplr.UserId)] then
-				task.spawn(lplr.kick, lplr, whitelist.data.BlacklistedUsers[tostring(lplr.UserId)])
-				return true
-			end
-		end
-	end
 
 	whitelist.commands = {
 		nil
